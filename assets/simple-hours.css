@@ -6,3 +6,10 @@ table.simple-hours-table tr {
     background: none;
     padding: 0;
 }
+
+table.simple-hours-table tbody>tr:nth-child(odd)>td,
+table.simple-hours-table tbody>tr:nth-child(odd)>th,
+table.simple-hours-table tbody>tr:nth-child(even)>td,
+table.simple-hours-table tbody>tr:nth-child(even)>th {
+    background: none;
+}
