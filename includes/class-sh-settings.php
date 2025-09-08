@@ -7,6 +7,7 @@ class SH_Settings {
     const OPTION_SCHEMA_NAME = 'sh_schema_name';
     const OPTION_SCHEMA_TYPE = 'sh_schema_type';
     const OPTION_SECOND = 'sh_second_hours';
+    const OPTION_TIME_FORMAT = 'sh_time_format';
 
     public function __construct() {
         add_action('admin_menu', array($this,'add_admin_menu'));
@@ -26,9 +27,11 @@ class SH_Settings {
         register_setting('sh_settings', self::OPTION_SCHEMA_NAME);
         register_setting('sh_settings', self::OPTION_SCHEMA_TYPE);
         register_setting('sh_settings', self::OPTION_SECOND);
+        register_setting('sh_settings', self::OPTION_TIME_FORMAT);
 
         add_settings_section('sh_section', 'Settings', null, 'sh_settings');
 
+        add_settings_field('sh_time_format', 'Time Format', array($this,'time_format_render'), 'sh_settings','sh_section');
         add_settings_field('sh_second', 'Enable Second Hours', array($this,'second_render'), 'sh_settings','sh_section');
         add_settings_field('sh_weekly', 'Weekly Hours', array($this,'weekly_render'), 'sh_settings','sh_section');
         add_settings_field('sh_holidays','Holiday Overrides', array($this,'holidays_render'),'sh_settings','sh_section');
@@ -41,6 +44,14 @@ class SH_Settings {
             array($this, 'shortcodes_info'),
             'sh_settings'
         );
+    }
+
+    public function time_format_render(){
+        $val = get_option(self::OPTION_TIME_FORMAT, '24');
+        echo "<select name='".self::OPTION_TIME_FORMAT."'>";
+        echo "<option value='24' ".selected($val,'24',false).">24-hour</option>";
+        echo "<option value='12' ".selected($val,'12',false).">12-hour (AM/PM)</option>";
+        echo "</select>";
     }
 
     public function second_render(){

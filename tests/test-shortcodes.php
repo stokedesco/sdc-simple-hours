@@ -13,6 +13,7 @@ class SimpleHours_Shortcodes_Test extends WP_UnitTestCase {
         ));
         update_option('sh_holiday_overrides', array());
         update_option('sh_second_hours', 0);
+        update_option('sh_time_format', '24');
     }
 
     public function test_today_shortcode_outputs_text() {
@@ -53,5 +54,11 @@ class SimpleHours_Shortcodes_Test extends WP_UnitTestCase {
 
         $output = do_shortcode('[simplehours_fullweek]');
         $this->assertStringContainsString('17:00 - 22:00', $output);
+    }
+
+    public function test_time_format_12_hour() {
+        update_option('sh_time_format', '12');
+        $output = do_shortcode('[simplehours_fullweek]');
+        $this->assertStringContainsString('9:00 AM - 5:00 PM', $output);
     }
 }

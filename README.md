@@ -5,7 +5,8 @@
 1. Upload the `simple-hours` folder to your `/wp-content/plugins/` directory.
 2. Activate the plugin through the 'Plugins' screen in WordPress.
 3. Go to Settings → Stoke Simple Hours to configure your weekly hours and holiday overrides.
-4. Optionally enable schema.org markup to output structured data for search engines.
+4. Select your preferred 12-hour or 24-hour time display.
+5. Optionally enable schema.org markup to output structured data for search engines.
 
 ## Usage
 
