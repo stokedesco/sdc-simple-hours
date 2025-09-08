@@ -98,6 +98,7 @@ class SH_Elementor_Widget extends \Elementor\Widget_Base {
             'condition' => [ 'text_icon[value]!' => '' ],
             'selectors' => [
                 '{{WRAPPER}} .simple-hours-output .simple-hours-icon-open' => 'color: {{VALUE}};',
+                '{{WRAPPER}} .simple-hours-output .simple-hours-icon-open svg' => 'fill: {{VALUE}}; stroke: {{VALUE}};',
             ],
         ] );
 
@@ -107,6 +108,7 @@ class SH_Elementor_Widget extends \Elementor\Widget_Base {
             'condition' => [ 'text_icon[value]!' => '' ],
             'selectors' => [
                 '{{WRAPPER}} .simple-hours-output .simple-hours-icon-closed' => 'color: {{VALUE}};',
+                '{{WRAPPER}} .simple-hours-output .simple-hours-icon-closed svg' => 'fill: {{VALUE}}; stroke: {{VALUE}};',
             ],
         ] );
 
@@ -117,6 +119,7 @@ class SH_Elementor_Widget extends \Elementor\Widget_Base {
             'condition' => [ 'text_icon[value]!' => '' ],
             'selectors' => [
                 '{{WRAPPER}} .simple-hours-output .simple-hours-icon' => 'font-size: {{SIZE}}{{UNIT}};',
+                '{{WRAPPER}} .simple-hours-output .simple-hours-icon svg' => 'width: {{SIZE}}{{UNIT}}; height: {{SIZE}}{{UNIT}};',
             ],
         ] );
 
@@ -359,14 +362,16 @@ class SH_Elementor_Widget extends \Elementor\Widget_Base {
 
         $icon = '';
         if ( ! empty( $settings['text_icon']['value'] ) ) {
-            $is_open   = SH_Shortcodes::is_open();
+            $is_open    = SH_Shortcodes::is_open();
             $icon_class = $is_open ? 'simple-hours-icon simple-hours-icon-open' : 'simple-hours-icon simple-hours-icon-closed';
-            $icon      = \Elementor\Icons_Manager::render_icon(
+
+            ob_start();
+            \Elementor\Icons_Manager::render_icon(
                 $settings['text_icon'],
                 [ 'aria-hidden' => 'true', 'class' => $icon_class ],
-                'span',
-                false
+                'span'
             );
+            $icon = ob_get_clean();
         }
 
         switch ( $format ) {
