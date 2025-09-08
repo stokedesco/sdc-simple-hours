@@ -19,4 +19,9 @@ class SimpleHours_Shortcodes_Test extends WP_UnitTestCase {
         $this->assertIsString($output);
         $this->assertNotEmpty($output);
     }
+
+    public function test_fullweek_has_current_day_class() {
+        $output = do_shortcode('[simplehours_fullweek]');
+        $this->assertStringContainsString('simple-hours-current-day', $output);
+    }
 }
