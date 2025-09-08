@@ -70,6 +70,45 @@ class SH_Elementor_Widget extends \Elementor\Widget_Base {
             ],
         ] );
 
+        $this->add_control( 'icon_heading', [
+            'label'     => __( 'Icon', 'simple-hours' ),
+            'type'      => \Elementor\Controls_Manager::HEADING,
+            'separator' => 'before',
+        ] );
+
+        $this->add_control( 'text_icon', [
+            'label' => __( 'Icon', 'simple-hours' ),
+            'type'  => \Elementor\Controls_Manager::ICONS,
+        ] );
+
+        $this->add_control( 'icon_position', [
+            'label'   => __( 'Icon Position', 'simple-hours' ),
+            'type'    => \Elementor\Controls_Manager::SELECT,
+            'options' => [
+                'prepend' => __( 'Prepend', 'simple-hours' ),
+                'append'  => __( 'Append', 'simple-hours' ),
+            ],
+            'default' => 'prepend',
+            'condition' => [ 'text_icon[value]!' => '' ],
+        ] );
+
+        $this->add_control( 'icon_color', [
+            'label'     => __( 'Icon Color', 'simple-hours' ),
+            'type'      => \Elementor\Controls_Manager::COLOR,
+            'selectors' => [
+                '{{WRAPPER}} .simple-hours-output .simple-hours-icon' => 'color: {{VALUE}};',
+            ],
+        ] );
+
+        $this->add_control( 'icon_size', [
+            'label' => __( 'Icon Size', 'simple-hours' ),
+            'type'  => \Elementor\Controls_Manager::SLIDER,
+            'range' => [ 'px' => [ 'min' => 6, 'max' => 100 ] ],
+            'selectors' => [
+                '{{WRAPPER}} .simple-hours-output .simple-hours-icon' => 'font-size: {{SIZE}}{{UNIT}};',
+            ],
+        ] );
+
         $this->end_controls_section();
 
         $this->start_controls_section( 'table_style', [
@@ -78,8 +117,33 @@ class SH_Elementor_Widget extends \Elementor\Widget_Base {
             'condition' => [ 'format' => 'fullweek' ],
         ] );
 
+        $this->add_control( 'heading_structure', [
+            'label' => __( 'Structure', 'simple-hours' ),
+            'type'  => \Elementor\Controls_Manager::HEADING,
+        ] );
+
+        $this->add_control( 'table_width', [
+            'label' => __( 'Table Width', 'simple-hours' ),
+            'type'  => \Elementor\Controls_Manager::SLIDER,
+            'size_units' => [ '%', 'px' ],
+            'range' => [
+                '%' => [ 'min' => 10, 'max' => 100 ],
+                'px' => [ 'min' => 0, 'max' => 1000 ],
+            ],
+            'selectors' => [
+                '{{WRAPPER}} table.simple-hours-table' => 'width: {{SIZE}}{{UNIT}};',
+            ],
+        ] );
+
+        $this->add_control( 'heading_typography', [
+            'label'     => __( 'Typography', 'simple-hours' ),
+            'type'      => \Elementor\Controls_Manager::HEADING,
+            'separator' => 'before',
+        ] );
+
         $this->add_group_control( \Elementor\Group_Control_Typography::get_type(), [
             'name'     => 'day_typography',
+            'label'    => __( 'Day Typography', 'simple-hours' ),
             'selector' => '{{WRAPPER}} table.simple-hours-table th',
         ] );
 
@@ -106,6 +170,7 @@ class SH_Elementor_Widget extends \Elementor\Widget_Base {
 
         $this->add_group_control( \Elementor\Group_Control_Typography::get_type(), [
             'name'     => 'time_typography',
+            'label'    => __( 'Time Typography', 'simple-hours' ),
             'selector' => '{{WRAPPER}} table.simple-hours-table td',
         ] );
 
@@ -130,17 +195,10 @@ class SH_Elementor_Widget extends \Elementor\Widget_Base {
             ],
         ] );
 
-        $this->add_control( 'table_width', [
-            'label' => __( 'Table Width', 'simple-hours' ),
-            'type'  => \Elementor\Controls_Manager::SLIDER,
-            'size_units' => [ '%', 'px' ],
-            'range' => [
-                '%' => [ 'min' => 10, 'max' => 100 ],
-                'px' => [ 'min' => 0, 'max' => 1000 ],
-            ],
-            'selectors' => [
-                '{{WRAPPER}} table.simple-hours-table' => 'width: {{SIZE}}{{UNIT}};',
-            ],
+        $this->add_control( 'heading_backgrounds', [
+            'label'     => __( 'Backgrounds', 'simple-hours' ),
+            'type'      => \Elementor\Controls_Manager::HEADING,
+            'separator' => 'before',
         ] );
 
         $this->add_control( 'row_color_1', [
@@ -159,8 +217,15 @@ class SH_Elementor_Widget extends \Elementor\Widget_Base {
             ],
         ] );
 
+        $this->add_control( 'heading_borders', [
+            'label'     => __( 'Borders', 'simple-hours' ),
+            'type'      => \Elementor\Controls_Manager::HEADING,
+            'separator' => 'before',
+        ] );
+
         $this->add_group_control( \Elementor\Group_Control_Border::get_type(), [
             'name'     => 'outer_border',
+            'label'    => __( 'Table Border', 'simple-hours' ),
             'selector' => '{{WRAPPER}} table.simple-hours-table',
         ] );
 
@@ -233,6 +298,12 @@ class SH_Elementor_Widget extends \Elementor\Widget_Base {
             ],
         ] );
 
+        $this->add_control( 'heading_current_day', [
+            'label'     => __( 'Current Day', 'simple-hours' ),
+            'type'      => \Elementor\Controls_Manager::HEADING,
+            'separator' => 'before',
+        ] );
+
         $this->add_control( 'current_day_bg', [
             'label'     => __( 'Current Day Background', 'simple-hours' ),
             'type'      => \Elementor\Controls_Manager::COLOR,
@@ -243,6 +314,7 @@ class SH_Elementor_Widget extends \Elementor\Widget_Base {
 
         $this->add_group_control( \Elementor\Group_Control_Typography::get_type(), [
             'name'     => 'current_day_typography',
+            'label'    => __( 'Current Day Typography', 'simple-hours' ),
             'selector' => '{{WRAPPER}} table.simple-hours-table tr.simple-hours-current-day th, {{WRAPPER}} table.simple-hours-table tr.simple-hours-current-day td',
         ] );
 
@@ -273,9 +345,22 @@ class SH_Elementor_Widget extends \Elementor\Widget_Base {
     protected function render() {
         $settings = $this->get_settings_for_display();
         $format   = isset( $settings['format'] ) ? $settings['format'] : 'today';
+
+        $icon = '';
+        if ( ! empty( $settings['text_icon']['value'] ) ) {
+            $icon = \Elementor\Icons_Manager::render_icon(
+                $settings['text_icon'],
+                [ 'aria-hidden' => 'true', 'class' => 'simple-hours-icon' ],
+                'span'
+            );
+        }
+
         switch ( $format ) {
             case 'until':
                 $out = SH_Shortcodes::until();
+                if ( $icon ) {
+                    $out = ( 'append' === $settings['icon_position'] ) ? $out . $icon : $icon . $out;
+                }
                 echo '<div class="simple-hours-output">' . $out . '</div>';
                 break;
             case 'fullweek':
@@ -285,6 +370,9 @@ class SH_Elementor_Widget extends \Elementor\Widget_Base {
             case 'today':
             default:
                 $out = SH_Shortcodes::today();
+                if ( $icon ) {
+                    $out = ( 'append' === $settings['icon_position'] ) ? $out . $icon : $icon . $out;
+                }
                 echo '<div class="simple-hours-output">' . $out . '</div>';
                 break;
         }
