@@ -98,10 +98,7 @@ class SH_Elementor_Widget extends \Elementor\Widget_Base {
             'condition' => [ 'text_icon[value]!' => '' ],
             'selectors' => [
 
-                '{{WRAPPER}} .simple-hours-output .simple-hours-icon-open' => 'color: {{VALUE}};',
-                '{{WRAPPER}} .simple-hours-output .simple-hours-icon-open i' => 'color: {{VALUE}};',
-                '{{WRAPPER}} .simple-hours-output .simple-hours-icon-open svg' => 'fill: {{VALUE}}; stroke: {{VALUE}};',
-                '{{WRAPPER}} .simple-hours-output .simple-hours-icon-open svg *' => 'fill: {{VALUE}}; stroke: {{VALUE}};',
+                '{{WRAPPER}} .simple-hours-output .simple-hours-icon-open, {{WRAPPER}} .simple-hours-output .simple-hours-icon-open *' => 'color: {{VALUE}}; fill: {{VALUE}}; stroke: {{VALUE}};',
 
             ],
         ] );
