@@ -102,6 +102,7 @@ class SH_Elementor_Widget extends \Elementor\Widget_Base {
                 '{{WRAPPER}} .simple-hours-output .simple-hours-icon-open i' => 'color: {{VALUE}};',
                 '{{WRAPPER}} .simple-hours-output .simple-hours-icon-open svg' => 'fill: {{VALUE}}; stroke: {{VALUE}};',
                 '{{WRAPPER}} .simple-hours-output .simple-hours-icon-open svg *' => 'fill: {{VALUE}}; stroke: {{VALUE}};',
+
             ],
         ] );
 
@@ -110,8 +111,9 @@ class SH_Elementor_Widget extends \Elementor\Widget_Base {
             'type'      => \Elementor\Controls_Manager::COLOR,
             'condition' => [ 'text_icon[value]!' => '' ],
             'selectors' => [
-                '{{WRAPPER}} .simple-hours-output .simple-hours-icon-closed, {{WRAPPER}} .simple-hours-output .simple-hours-icon-closed i' => 'color: {{VALUE}};',
-                '{{WRAPPER}} .simple-hours-output .simple-hours-icon-closed svg, {{WRAPPER}} .simple-hours-output .simple-hours-icon-closed svg *' => 'fill: {{VALUE}}; stroke: {{VALUE}};',
+
+                '{{WRAPPER}} .simple-hours-output .simple-hours-icon-closed, {{WRAPPER}} .simple-hours-output .simple-hours-icon-closed *' => 'color: {{VALUE}}; fill: {{VALUE}}; stroke: {{VALUE}};',
+
             ],
         ] );
 
