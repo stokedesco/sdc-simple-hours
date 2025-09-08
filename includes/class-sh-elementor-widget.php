@@ -92,11 +92,21 @@ class SH_Elementor_Widget extends \Elementor\Widget_Base {
             'condition' => [ 'text_icon[value]!' => '' ],
         ] );
 
-        $this->add_control( 'icon_color', [
-            'label'     => __( 'Icon Color', 'simple-hours' ),
+        $this->add_control( 'icon_color_open', [
+            'label'     => __( 'Icon Color (Open)', 'simple-hours' ),
             'type'      => \Elementor\Controls_Manager::COLOR,
+            'condition' => [ 'text_icon[value]!' => '' ],
             'selectors' => [
-                '{{WRAPPER}} .simple-hours-output .simple-hours-icon' => 'color: {{VALUE}};',
+                '{{WRAPPER}} .simple-hours-output .simple-hours-icon-open' => 'color: {{VALUE}};',
+            ],
+        ] );
+
+        $this->add_control( 'icon_color_closed', [
+            'label'     => __( 'Icon Color (Closed)', 'simple-hours' ),
+            'type'      => \Elementor\Controls_Manager::COLOR,
+            'condition' => [ 'text_icon[value]!' => '' ],
+            'selectors' => [
+                '{{WRAPPER}} .simple-hours-output .simple-hours-icon-closed' => 'color: {{VALUE}};',
             ],
         ] );
 
@@ -104,6 +114,7 @@ class SH_Elementor_Widget extends \Elementor\Widget_Base {
             'label' => __( 'Icon Size', 'simple-hours' ),
             'type'  => \Elementor\Controls_Manager::SLIDER,
             'range' => [ 'px' => [ 'min' => 6, 'max' => 100 ] ],
+            'condition' => [ 'text_icon[value]!' => '' ],
             'selectors' => [
                 '{{WRAPPER}} .simple-hours-output .simple-hours-icon' => 'font-size: {{SIZE}}{{UNIT}};',
             ],
@@ -348,10 +359,13 @@ class SH_Elementor_Widget extends \Elementor\Widget_Base {
 
         $icon = '';
         if ( ! empty( $settings['text_icon']['value'] ) ) {
-            $icon = \Elementor\Icons_Manager::render_icon(
+            $is_open   = SH_Shortcodes::is_open();
+            $icon_class = $is_open ? 'simple-hours-icon simple-hours-icon-open' : 'simple-hours-icon simple-hours-icon-closed';
+            $icon      = \Elementor\Icons_Manager::render_icon(
                 $settings['text_icon'],
-                [ 'aria-hidden' => 'true', 'class' => 'simple-hours-icon' ],
-                'span'
+                [ 'aria-hidden' => 'true', 'class' => $icon_class ],
+                'span',
+                false
             );
         }
 

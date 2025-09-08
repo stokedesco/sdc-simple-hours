@@ -24,4 +24,14 @@ class SimpleHours_Shortcodes_Test extends WP_UnitTestCase {
         $output = do_shortcode('[simplehours_fullweek]');
         $this->assertStringContainsString('simple-hours-current-day', $output);
     }
+
+    public function test_is_open() {
+        $open_time  = strtotime('2023-06-26 10:00:00'); // Monday 10:00
+        $closed_time = strtotime('2023-06-26 18:00:00'); // Monday 18:00
+        $weekend_time = strtotime('2023-06-24 10:00:00'); // Saturday
+
+        $this->assertTrue( SH_Shortcodes::is_open( $open_time ) );
+        $this->assertFalse( SH_Shortcodes::is_open( $closed_time ) );
+        $this->assertFalse( SH_Shortcodes::is_open( $weekend_time ) );
+    }
 }

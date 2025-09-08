@@ -32,4 +32,8 @@ add_action( 'elementor/widgets/register', function( $widgets_manager ) {
     $widgets_manager->register( new SH_Elementor_Widget() );
 } );
 
+add_action( 'wp_enqueue_scripts', function() {
+    wp_enqueue_style( 'simple-hours', SH_URL . 'assets/simple-hours.css', array(), '1.0' );
+} );
+
 
