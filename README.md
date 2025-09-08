@@ -1,20 +1,20 @@
-# Simple Hours Plugin
+# Stoke Simple Hours Plugin
 
 ## Installation
 
 1. Upload the `simple-hours` folder to your `/wp-content/plugins/` directory.
 2. Activate the plugin through the 'Plugins' screen in WordPress.
-3. Go to Settings → Simple Hours to configure your weekly hours and holiday overrides.
+3. Go to Settings → Stoke Simple Hours to configure your weekly hours and holiday overrides.
 
 ## Usage
 
 - Shortcodes:
-  - `[simplehours_today]`
-  - `[simplehours_until]`
-  - `[simplehours_fullweek]`
+  - `[simplehours_today]` – Today's hours
+  - `[simplehours_until]` – Open today until
+  - `[simplehours_fullweek]` – Full week table
 
 - Elementor:
-  - Add the **Simple Hours** widget and choose the output format along with text or table styling.
+  - Add the **Stoke Simple Hours** widget and choose the output format along with text or table styling.
 
 
 ## Filters & Actions

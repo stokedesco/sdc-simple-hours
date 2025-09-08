@@ -9,7 +9,7 @@ class SH_Elementor_Widget extends \Elementor\Widget_Base {
     }
 
     public function get_title() {
-        return __( 'Simple Hours', 'simple-hours' );
+        return __( 'Stoke Simple Hours', 'simple-hours' );
     }
 
     public function get_icon() {
@@ -30,9 +30,9 @@ class SH_Elementor_Widget extends \Elementor\Widget_Base {
             'type'    => \Elementor\Controls_Manager::SELECT,
             'default' => 'today',
             'options' => [
-                'today'    => __( 'Today', 'simple-hours' ),
-                'until'    => __( 'Until', 'simple-hours' ),
-                'fullweek' => __( 'Full Week', 'simple-hours' ),
+                'today'    => __( "Today's Hours", 'simple-hours' ),
+                'until'    => __( 'Open Today Until', 'simple-hours' ),
+                'fullweek' => __( 'Full Week Table', 'simple-hours' ),
             ],
         ] );
 
