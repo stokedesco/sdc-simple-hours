@@ -1,18 +1,25 @@
 <?php
 class SH_Schema {
     public function __construct(){
-        add_action('wp_head', array($this,'output_schema'));
+        if ( get_option( SH_Settings::OPTION_SCHEMA ) ) {
+            add_action('wp_head', array($this,'output_schema'));
+        }
     }
     public function output_schema(){
         list($weekly, $holidays) = SH_Shortcodes::get_data();
-        $schema = array();
+        $schema = array(
+            '@context' => 'https://schema.org',
+            '@type'    => get_option( SH_Settings::OPTION_SCHEMA_TYPE, 'LocalBusiness' ),
+            'name'     => get_option( SH_Settings::OPTION_SCHEMA_NAME, get_bloginfo('name') ),
+            'openingHoursSpecification' => array(),
+        );
 
         if (is_array($weekly)) {
             foreach ($weekly as $day => $v) {
                 if (!empty($v['closed'])) {
                     continue;
                 }
-                $schema[] = array(
+                $schema['openingHoursSpecification'][] = array(
                     '@type'     => 'OpeningHoursSpecification',
                     'dayOfWeek' => $day,
                     'opens'     => $v['open'],
@@ -26,7 +33,7 @@ class SH_Schema {
                 if (isset($h['closed'])) {
                     continue;
                 }
-                $schema[] = array(
+                $schema['openingHoursSpecification'][] = array(
                     '@type'        => 'OpeningHoursSpecification',
                     'validFrom'    => $h['from'],
                     'validThrough' => $h['to'],
@@ -35,7 +42,10 @@ class SH_Schema {
                 );
             }
         }
-        echo "<script type='application/ld+json'>".json_encode($schema)."</script>";
+
+        if (! empty($schema['openingHoursSpecification'])) {
+            echo "<script type='application/ld+json'>" . wp_json_encode($schema) . "</script>";
+        }
     }
 }
 new SH_Schema();
