@@ -5,6 +5,7 @@
 1. Upload the `simple-hours` folder to your `/wp-content/plugins/` directory.
 2. Activate the plugin through the 'Plugins' screen in WordPress.
 3. Go to Settings → Stoke Simple Hours to configure your weekly hours and holiday overrides.
+4. Optionally enable schema.org markup to output structured data for search engines.
 
 ## Usage
 
@@ -15,6 +16,9 @@
 
 - Elementor:
   - Add the **Stoke Simple Hours** widget and choose the output format along with text or table styling.
+
+- Schema Markup:
+  - Enable schema.org markup in settings to auto-generate `OpeningHoursSpecification` JSON-LD.
 
 
 ## Filters & Actions

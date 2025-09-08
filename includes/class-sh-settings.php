@@ -3,6 +3,9 @@ class SH_Settings {
     const OPTION_WEEKLY = 'sh_weekly_hours';
     const OPTION_HOLIDAYS = 'sh_holiday_overrides';
     const OPTION_DEBUG = 'sh_debug_mode';
+    const OPTION_SCHEMA = 'sh_schema_enabled';
+    const OPTION_SCHEMA_NAME = 'sh_schema_name';
+    const OPTION_SCHEMA_TYPE = 'sh_schema_type';
 
     public function __construct() {
         add_action('admin_menu', array($this,'add_admin_menu'));
@@ -18,12 +21,16 @@ class SH_Settings {
         register_setting('sh_settings', self::OPTION_WEEKLY);
         register_setting('sh_settings', self::OPTION_HOLIDAYS);
         register_setting('sh_settings', self::OPTION_DEBUG);
+        register_setting('sh_settings', self::OPTION_SCHEMA);
+        register_setting('sh_settings', self::OPTION_SCHEMA_NAME);
+        register_setting('sh_settings', self::OPTION_SCHEMA_TYPE);
 
         add_settings_section('sh_section', 'Settings', null, 'sh_settings');
 
         add_settings_field('sh_weekly', 'Weekly Hours', array($this,'weekly_render'), 'sh_settings','sh_section');
         add_settings_field('sh_holidays','Holiday Overrides', array($this,'holidays_render'),'sh_settings','sh_section');
         add_settings_field('sh_debug','Debug Mode', array($this,'debug_render'),'sh_settings','sh_section');
+        add_settings_field('sh_schema','Schema Markup', array($this,'schema_render'),'sh_settings','sh_section');
 
         add_settings_section(
             'sh_shortcodes',
@@ -80,6 +87,15 @@ class SH_Settings {
     public function debug_render(){
         $val = get_option(self::OPTION_DEBUG, false);
         echo "<label><input type='checkbox' name='".self::OPTION_DEBUG."' value='1' ".($val?'checked':'')."/> Enable Debug Mode</label>";
+    }
+
+    public function schema_render(){
+        $enabled = get_option(self::OPTION_SCHEMA, false);
+        $name    = get_option(self::OPTION_SCHEMA_NAME, get_bloginfo('name'));
+        $type    = get_option(self::OPTION_SCHEMA_TYPE, 'LocalBusiness');
+        echo "<label><input type='checkbox' name='".self::OPTION_SCHEMA."' value='1' ".($enabled?'checked':'')."/> Enable schema.org markup</label><br />";
+        echo "<label>Business Name: <input type='text' name='".self::OPTION_SCHEMA_NAME."' value='".esc_attr($name)."' /></label><br />";
+        echo "<label>Business Type: <input type='text' name='".self::OPTION_SCHEMA_TYPE."' value='".esc_attr($type)."' /></label>";
     }
 
     public function shortcodes_info() {
