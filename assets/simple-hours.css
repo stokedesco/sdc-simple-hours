@@ -1,0 +1,8 @@
+table.simple-hours-table,
+table.simple-hours-table th,
+table.simple-hours-table td,
+table.simple-hours-table tr {
+    border: none;
+    background: none;
+    padding: 0;
+}

@@ -91,6 +91,27 @@ class SH_Shortcodes {
         return $weekly[$dn]['open'];
     }
 
+    public static function is_open($timestamp = null){
+        list($weekly, $holidays) = self::get_data();
+        $ts      = $timestamp ? $timestamp : time();
+        $today   = date('Y-m-d', $ts);
+        $time    = date('H:i', $ts);
+        $dayname = date('l', $ts);
+
+        if (is_array($holidays)) {
+            foreach ($holidays as $h) {
+                if ($today >= $h['from'] && $today <= $h['to']){
+                    if (isset($h['closed'])) return false;
+                    return ($time >= $h['open'] && $time < $h['close']);
+                }
+            }
+        }
+        if (!empty($weekly[$dayname]['closed'])){
+            return false;
+        }
+        return ($time >= $weekly[$dayname]['open'] && $time < $weekly[$dayname]['close']);
+    }
+
     public static function fullweek(){
         list($weekly,) = self::get_data();
         $out         = '<table class="simple-hours-table">';
