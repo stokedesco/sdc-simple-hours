@@ -13,6 +13,9 @@
   - `[simplehours_until]`
   - `[simplehours_fullweek]`
 
+- Elementor:
+  - Add the **Simple Hours** widget and choose the output format along with text or table styling.
+
 
 ## Filters & Actions
 
