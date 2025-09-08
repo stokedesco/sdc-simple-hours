@@ -21,7 +21,7 @@ class SH_Shortcodes {
                 if ($today >= $h['from'] && $today <= $h['to']){
                     if (isset($h['closed'])) return "Sorry, we're closed today ({$h['label']}).";
                     $label = empty($h['label']) ? '' : " ({$h['label']})";
-                    return "We're open from {$h['open']} to {$h['close']}{$label}.";
+                    return "We're open from " . self::format_time($h['open']) . " to " . self::format_time($h['close']) . "{$label}.";
                 }
             }
         }
@@ -34,7 +34,7 @@ class SH_Shortcodes {
 
         $parts = array();
         foreach ($intervals as $i) {
-            $parts[] = $i[0] . ' to ' . $i[1];
+            $parts[] = self::format_time($i[0]) . ' to ' . self::format_time($i[1]);
         }
         return "We're open from " . implode(' and ', $parts) . ".";
     }
@@ -48,10 +48,10 @@ class SH_Shortcodes {
 
         foreach ($intervals as $i) {
             if ($time >= $i[0] && $time < $i[1]) {
-                return "Open today until {$i[1]}.";
+                return "Open today until " . self::format_time($i[1]) . ".";
             }
             if ($time < $i[0]) {
-                return "Next open at {$i[0]} today.";
+                return "Next open at " . self::format_time($i[0]) . " today.";
             }
         }
 
@@ -61,7 +61,7 @@ class SH_Shortcodes {
             $ints = self::get_intervals_for_date($weekly, $holidays, $d);
             if (!empty($ints)) {
                 $dn = date('l', strtotime($d));
-                return "Next open at {$ints[0][0]} on {$dn}.";
+                return "Next open at " . self::format_time($ints[0][0]) . " on {$dn}.";
             }
         }
     }
@@ -94,6 +94,17 @@ class SH_Shortcodes {
         return $out;
     }
 
+    private static function format_time($time){
+        $format = get_option(SH_Settings::OPTION_TIME_FORMAT, '24');
+        if ($format === '12') {
+            $dt = DateTime::createFromFormat('H:i', $time);
+            if ($dt) {
+                return $dt->format('g:i A');
+            }
+        }
+        return $time;
+    }
+
     public static function is_open($timestamp = null){
         list($weekly, $holidays) = self::get_data();
         $ts   = $timestamp ? $timestamp : time();
@@ -119,8 +130,8 @@ class SH_Shortcodes {
                     $hours1 = 'Closed';
                     $hours2 = '';
                 } else {
-                    $hours1 = !empty($v['open']) && !empty($v['close']) ? "{$v['open']} - {$v['close']}" : '';
-                    $hours2 = ($second && !empty($v['open2']) && !empty($v['close2'])) ? "{$v['open2']} - {$v['close2']}" : '';
+                    $hours1 = !empty($v['open']) && !empty($v['close']) ? self::format_time($v['open']) . ' - ' . self::format_time($v['close']) : '';
+                    $hours2 = ($second && !empty($v['open2']) && !empty($v['close2'])) ? self::format_time($v['open2']) . ' - ' . self::format_time($v['close2']) : '';
                 }
                 if ($second) {
                     $out .= "<tr{$row_class}><th class=\"simple-hours-day\">$day</th><td class=\"simple-hours-time\">$hours1</td><td class=\"simple-hours-time\">$hours2</td></tr>";
