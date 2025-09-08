@@ -3,6 +3,11 @@ class SH_Settings {
     const OPTION_WEEKLY = 'sh_weekly_hours';
     const OPTION_HOLIDAYS = 'sh_holiday_overrides';
     const OPTION_DEBUG = 'sh_debug_mode';
+    const OPTION_SCHEMA = 'sh_schema_enabled';
+    const OPTION_SCHEMA_NAME = 'sh_schema_name';
+    const OPTION_SCHEMA_TYPE = 'sh_schema_type';
+    const OPTION_SECOND = 'sh_second_hours';
+    const OPTION_TIME_FORMAT = 'sh_time_format';
 
     public function __construct() {
         add_action('admin_menu', array($this,'add_admin_menu'));
@@ -11,19 +16,27 @@ class SH_Settings {
     }
 
     public function add_admin_menu(){
-        add_options_page('Simple Hours', 'Simple Hours', 'manage_options', 'simple_hours', array($this,'options_page'));
+        add_options_page('Stoke Simple Hours', 'Stoke Simple Hours', 'manage_options', 'simple_hours', array($this,'options_page'));
     }
 
     public function settings_init(){
         register_setting('sh_settings', self::OPTION_WEEKLY);
         register_setting('sh_settings', self::OPTION_HOLIDAYS);
         register_setting('sh_settings', self::OPTION_DEBUG);
+        register_setting('sh_settings', self::OPTION_SCHEMA);
+        register_setting('sh_settings', self::OPTION_SCHEMA_NAME);
+        register_setting('sh_settings', self::OPTION_SCHEMA_TYPE);
+        register_setting('sh_settings', self::OPTION_SECOND);
+        register_setting('sh_settings', self::OPTION_TIME_FORMAT);
 
         add_settings_section('sh_section', 'Settings', null, 'sh_settings');
 
+        add_settings_field('sh_time_format', 'Time Format', array($this,'time_format_render'), 'sh_settings','sh_section');
+        add_settings_field('sh_second', 'Enable Second Hours', array($this,'second_render'), 'sh_settings','sh_section');
         add_settings_field('sh_weekly', 'Weekly Hours', array($this,'weekly_render'), 'sh_settings','sh_section');
         add_settings_field('sh_holidays','Holiday Overrides', array($this,'holidays_render'),'sh_settings','sh_section');
         add_settings_field('sh_debug','Debug Mode', array($this,'debug_render'),'sh_settings','sh_section');
+        add_settings_field('sh_schema','Schema Markup', array($this,'schema_render'),'sh_settings','sh_section');
 
         add_settings_section(
             'sh_shortcodes',
@@ -33,17 +46,37 @@ class SH_Settings {
         );
     }
 
+    public function time_format_render(){
+        $val = get_option(self::OPTION_TIME_FORMAT, '24');
+        echo "<select name='".self::OPTION_TIME_FORMAT."'>";
+        echo "<option value='24' ".selected($val,'24',false).">24-hour</option>";
+        echo "<option value='12' ".selected($val,'12',false).">12-hour (AM/PM)</option>";
+        echo "</select>";
+    }
+
+    public function second_render(){
+        $enabled = get_option(self::OPTION_SECOND, false);
+        echo "<label><input type='checkbox' id='sh_enable_second_hours' name='".self::OPTION_SECOND."' value='1' ".($enabled?'checked':'')."/> Allow second open/close time</label>";
+    }
+
     public function weekly_render(){
         $values = get_option(self::OPTION_WEEKLY, array());
         $days = array('Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday');
+        $second = get_option(self::OPTION_SECOND, false);
         echo '<table>';
         foreach($days as $day){
-            $open = isset($values[$day]['open']) ? esc_attr($values[$day]['open']) : '';
-            $close= isset($values[$day]['close'])? esc_attr($values[$day]['close']):'';
+            $open   = isset($values[$day]['open']) ? esc_attr($values[$day]['open']) : '';
+            $close  = isset($values[$day]['close'])? esc_attr($values[$day]['close']):'';
+            $open2  = isset($values[$day]['open2']) ? esc_attr($values[$day]['open2']) : '';
+            $close2 = isset($values[$day]['close2'])? esc_attr($values[$day]['close2']):'';
             $closed = isset($values[$day]['closed'])?$values[$day]['closed']:false;
             echo "<tr><th>{$day}</th>";
             echo "<td><input type='time' name='".self::OPTION_WEEKLY."[{$day}][open]' value='{$open}' ".($closed?'disabled':'')." /></td>";
             echo "<td><input type='time' name='".self::OPTION_WEEKLY."[{$day}][close]' value='{$close}' ".($closed?'disabled':'')." /></td>";
+            if ($second){
+                echo "<td class='sh-second-hours'><input type='time' name='".self::OPTION_WEEKLY."[{$day}][open2]' value='{$open2}' ".($closed?'disabled':'')." /></td>";
+                echo "<td class='sh-second-hours'><input type='time' name='".self::OPTION_WEEKLY."[{$day}][close2]' value='{$close2}' ".($closed?'disabled':'')." /></td>";
+            }
             echo "<td><label><input type='checkbox' name='".self::OPTION_WEEKLY."[{$day}][closed]' value='1' ".($closed?'checked':'')." data-day='{$day}' class='sh-day-closed'/> Closed</label></td>";
             echo '</tr>';
         }
@@ -82,12 +115,21 @@ class SH_Settings {
         echo "<label><input type='checkbox' name='".self::OPTION_DEBUG."' value='1' ".($val?'checked':'')."/> Enable Debug Mode</label>";
     }
 
+    public function schema_render(){
+        $enabled = get_option(self::OPTION_SCHEMA, false);
+        $name    = get_option(self::OPTION_SCHEMA_NAME, get_bloginfo('name'));
+        $type    = get_option(self::OPTION_SCHEMA_TYPE, 'LocalBusiness');
+        echo "<label><input type='checkbox' name='".self::OPTION_SCHEMA."' value='1' ".($enabled?'checked':'')."/> Enable schema.org markup</label><br />";
+        echo "<label>Business Name: <input type='text' name='".self::OPTION_SCHEMA_NAME."' value='".esc_attr($name)."' /></label><br />";
+        echo "<label>Business Type: <input type='text' name='".self::OPTION_SCHEMA_TYPE."' value='".esc_attr($type)."' /></label>";
+    }
+
     public function shortcodes_info() {
         echo '<p>Use these shortcodes to display opening hours:</p>';
         echo '<ul>';
         echo '<li><code>[simplehours_today]</code> – e.g. “We\'re open from 9:00 to 17:00.”</li>';
-        echo '<li><code>[simplehours_until]</code> – e.g. “Open until 17:00.”</li>';
-        echo '<li><code>[simplehours_fullweek]</code> – outputs a weekly table of hours.</li>';
+        echo '<li><code>[simplehours_until]</code> – e.g. “Open today until 17:00.”</li>';
+        echo '<li><code>[simplehours_fullweek]</code> – outputs a full week table of hours.</li>';
         echo '</ul>';
     }
 
@@ -99,7 +141,7 @@ class SH_Settings {
     public function options_page(){
         ?>
         <div class="wrap">
-            <h1>Simple Hours Settings</h1>
+            <h1>Stoke Simple Hours Settings</h1>
             <form method="post" action="options.php">
             <?php
             settings_fields('sh_settings');

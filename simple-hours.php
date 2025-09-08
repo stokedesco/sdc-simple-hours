@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: Simple Hours
+Plugin Name: Stoke Simple Hours
 Description: Lean plugin for setting weekly hours and holiday overrides.
 Version: 1.0
 Author: Stoke Design Co
@@ -26,5 +26,14 @@ require_once SH_DIR . 'includes/class-sh-schema.php';
 require_once SH_DIR . 'includes/class-sh-logger.php';
 
 add_action( 'plugins_loaded', array( 'SH_Shortcodes', 'init' ) );
+
+add_action( 'elementor/widgets/register', function( $widgets_manager ) {
+    require_once SH_DIR . 'includes/class-sh-elementor-widget.php';
+    $widgets_manager->register( new SH_Elementor_Widget() );
+} );
+
+add_action( 'wp_enqueue_scripts', function() {
+    wp_enqueue_style( 'simple-hours', SH_URL . 'assets/simple-hours.css', array(), '1.0' );
+} );
 
 
