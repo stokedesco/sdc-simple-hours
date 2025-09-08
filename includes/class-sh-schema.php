@@ -19,12 +19,22 @@ class SH_Schema {
                 if (!empty($v['closed'])) {
                     continue;
                 }
-                $schema['openingHoursSpecification'][] = array(
-                    '@type'     => 'OpeningHoursSpecification',
-                    'dayOfWeek' => $day,
-                    'opens'     => $v['open'],
-                    'closes'    => $v['close'],
-                );
+                if (!empty($v['open']) && !empty($v['close'])) {
+                    $schema['openingHoursSpecification'][] = array(
+                        '@type'     => 'OpeningHoursSpecification',
+                        'dayOfWeek' => $day,
+                        'opens'     => $v['open'],
+                        'closes'    => $v['close'],
+                    );
+                }
+                if (!empty($v['open2']) && !empty($v['close2'])) {
+                    $schema['openingHoursSpecification'][] = array(
+                        '@type'     => 'OpeningHoursSpecification',
+                        'dayOfWeek' => $day,
+                        'opens'     => $v['open2'],
+                        'closes'    => $v['close2'],
+                    );
+                }
             }
         }
 

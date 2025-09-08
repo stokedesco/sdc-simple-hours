@@ -6,6 +6,7 @@ class SH_Settings {
     const OPTION_SCHEMA = 'sh_schema_enabled';
     const OPTION_SCHEMA_NAME = 'sh_schema_name';
     const OPTION_SCHEMA_TYPE = 'sh_schema_type';
+    const OPTION_SECOND = 'sh_second_hours';
 
     public function __construct() {
         add_action('admin_menu', array($this,'add_admin_menu'));
@@ -24,9 +25,11 @@ class SH_Settings {
         register_setting('sh_settings', self::OPTION_SCHEMA);
         register_setting('sh_settings', self::OPTION_SCHEMA_NAME);
         register_setting('sh_settings', self::OPTION_SCHEMA_TYPE);
+        register_setting('sh_settings', self::OPTION_SECOND);
 
         add_settings_section('sh_section', 'Settings', null, 'sh_settings');
 
+        add_settings_field('sh_second', 'Enable Second Hours', array($this,'second_render'), 'sh_settings','sh_section');
         add_settings_field('sh_weekly', 'Weekly Hours', array($this,'weekly_render'), 'sh_settings','sh_section');
         add_settings_field('sh_holidays','Holiday Overrides', array($this,'holidays_render'),'sh_settings','sh_section');
         add_settings_field('sh_debug','Debug Mode', array($this,'debug_render'),'sh_settings','sh_section');
@@ -40,17 +43,29 @@ class SH_Settings {
         );
     }
 
+    public function second_render(){
+        $enabled = get_option(self::OPTION_SECOND, false);
+        echo "<label><input type='checkbox' id='sh_enable_second_hours' name='".self::OPTION_SECOND."' value='1' ".($enabled?'checked':'')."/> Allow second open/close time</label>";
+    }
+
     public function weekly_render(){
         $values = get_option(self::OPTION_WEEKLY, array());
         $days = array('Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday');
+        $second = get_option(self::OPTION_SECOND, false);
         echo '<table>';
         foreach($days as $day){
-            $open = isset($values[$day]['open']) ? esc_attr($values[$day]['open']) : '';
-            $close= isset($values[$day]['close'])? esc_attr($values[$day]['close']):'';
+            $open   = isset($values[$day]['open']) ? esc_attr($values[$day]['open']) : '';
+            $close  = isset($values[$day]['close'])? esc_attr($values[$day]['close']):'';
+            $open2  = isset($values[$day]['open2']) ? esc_attr($values[$day]['open2']) : '';
+            $close2 = isset($values[$day]['close2'])? esc_attr($values[$day]['close2']):'';
             $closed = isset($values[$day]['closed'])?$values[$day]['closed']:false;
             echo "<tr><th>{$day}</th>";
             echo "<td><input type='time' name='".self::OPTION_WEEKLY."[{$day}][open]' value='{$open}' ".($closed?'disabled':'')." /></td>";
             echo "<td><input type='time' name='".self::OPTION_WEEKLY."[{$day}][close]' value='{$close}' ".($closed?'disabled':'')." /></td>";
+            if ($second){
+                echo "<td class='sh-second-hours'><input type='time' name='".self::OPTION_WEEKLY."[{$day}][open2]' value='{$open2}' ".($closed?'disabled':'')." /></td>";
+                echo "<td class='sh-second-hours'><input type='time' name='".self::OPTION_WEEKLY."[{$day}][close2]' value='{$close2}' ".($closed?'disabled':'')." /></td>";
+            }
             echo "<td><label><input type='checkbox' name='".self::OPTION_WEEKLY."[{$day}][closed]' value='1' ".($closed?'checked':'')." data-day='{$day}' class='sh-day-closed'/> Closed</label></td>";
             echo '</tr>';
         }

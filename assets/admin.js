@@ -3,6 +3,14 @@ jQuery(function($){
     var row = $(this).closest('tr');
     row.find('input[type=time]').prop('disabled', $(this).is(':checked'));
   });
+
+  function toggleSecond(){
+    var show = $('#sh_enable_second_hours').is(':checked');
+    $('.sh-second-hours').toggle(show);
+  }
+  toggleSecond();
+  $('#sh_enable_second_hours').on('change', toggleSecond);
+
   $('#sh-add-holiday').on('click', function(e){
     e.preventDefault();
     var table = $('#sh-holidays');

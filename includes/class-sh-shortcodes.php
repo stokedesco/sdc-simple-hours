@@ -14,118 +14,119 @@ class SH_Shortcodes {
 
     public static function today(){
         list($weekly, $holidays) = self::get_data();
-        $today   = date('Y-m-d');
-        $dayname = date('l');
+        $today = date('Y-m-d');
 
         if (is_array($holidays)) {
             foreach ($holidays as $h) {
                 if ($today >= $h['from'] && $today <= $h['to']){
                     if (isset($h['closed'])) return "Sorry, we're closed today ({$h['label']}).";
-                    return "We're open from {$h['open']} to {$h['close']} ({$h['label']}).";
+                    $label = empty($h['label']) ? '' : " ({$h['label']})";
+                    return "We're open from {$h['open']} to {$h['close']}{$label}.";
                 }
             }
         }
-        if (!empty($weekly[$dayname]['closed'])){
+
+        $intervals = self::get_intervals_for_date($weekly, $holidays, $today);
+
+        if (empty($intervals)) {
             return "Sorry, we're closed today.";
         }
-        $o = $weekly[$dayname]['open'];
-        $c = $weekly[$dayname]['close'];
-        return "We're open from {$o} to {$c}.";
+
+        $parts = array();
+        foreach ($intervals as $i) {
+            $parts[] = $i[0] . ' to ' . $i[1];
+        }
+        return "We're open from " . implode(' and ', $parts) . ".";
     }
 
     public static function until(){
         list($weekly, $holidays) = self::get_data();
-        $now   = new DateTime();
-        $today = $now->format('Y-m-d');
-        $time  = $now->format('H:i');
+        $now      = new DateTime();
+        $today    = $now->format('Y-m-d');
+        $time     = $now->format('H:i');
+        $intervals = self::get_intervals_for_date($weekly, $holidays, $today);
 
-        if (is_array($holidays)) {
-            foreach ($holidays as $h) {
-                if ($today >= $h['from'] && $today <= $h['to']){
-                    if (isset($h['closed'])) {
-                        $tom = $now->add(new DateInterval('P1D'))->format('Y-m-d');
-                        return "Next open at " . self::get_open_time($weekly, $holidays, $tom);
-                    }
-                    if ($time < $h['close']){
-                        return "Open today until {$h['close']}.";
-                    }
-                    return "Next open at " . self::get_open_time($weekly, $holidays, $today);
-                }
+        foreach ($intervals as $i) {
+            if ($time >= $i[0] && $time < $i[1]) {
+                return "Open today until {$i[1]}.";
+            }
+            if ($time < $i[0]) {
+                return "Next open at {$i[0]} today.";
             }
         }
-        $day = date('l');
-        if (!empty($weekly[$day]['closed']) || $time > $weekly[$day]['close']){
-            $next_date = new DateTime();
-            for ($i=1;$i<=7;$i++){
-                $d = $next_date->add(new DateInterval('P1D'))->format('Y-m-d');
+
+        $next_date = new DateTime();
+        for ($i=1;$i<=7;$i++){
+            $d = $next_date->add(new DateInterval('P1D'))->format('Y-m-d');
+            $ints = self::get_intervals_for_date($weekly, $holidays, $d);
+            if (!empty($ints)) {
                 $dn = date('l', strtotime($d));
-                if (is_array($holidays)) {
-                    foreach ($holidays as $h) {
-                        if ($d >= $h['from'] && $d <= $h['to'] && isset($h['closed'])) {
-                            continue 2;
-                        }
-                        if ($d >= $h['from'] && $d <= $h['to']) {
-                            return "Next open at {$h['open']} tomorrow.";
-                        }
-                    }
-                }
-                if (empty($weekly[$dn]['closed'])) {
-                    return "Next open at " . $weekly[$dn]['open'] . " on " . $dn . ".";
-                }
+                return "Next open at {$ints[0][0]} on {$dn}.";
             }
-        }
-        if ($time < $weekly[$day]['close']){
-            return "Open today until " . $weekly[$day]['close'] . ".";
         }
     }
 
     private static function get_open_time($weekly, $holidays, $date){
-        $dn = date('l', strtotime($date));
+        $ints = self::get_intervals_for_date($weekly, $holidays, $date);
+        return !empty($ints) ? $ints[0][0] : '';
+    }
+
+    private static function get_intervals_for_date($weekly, $holidays, $date){
         if (is_array($holidays)) {
             foreach ($holidays as $h) {
-                if ($date >= $h['from'] && $date <= $h['to'] && !isset($h['closed'])) {
-                    return $h['open'];
+                if ($date >= $h['from'] && $date <= $h['to']){
+                    if (isset($h['closed'])) return array();
+                    return array(array($h['open'], $h['close']));
                 }
             }
         }
-        return $weekly[$dn]['open'];
+        $dn = date('l', strtotime($date));
+        if (!isset($weekly[$dn]) || !empty($weekly[$dn]['closed'])){
+            return array();
+        }
+        $out = array();
+        if (!empty($weekly[$dn]['open']) && !empty($weekly[$dn]['close'])) {
+            $out[] = array($weekly[$dn]['open'], $weekly[$dn]['close']);
+        }
+        if (!empty($weekly[$dn]['open2']) && !empty($weekly[$dn]['close2'])) {
+            $out[] = array($weekly[$dn]['open2'], $weekly[$dn]['close2']);
+        }
+        return $out;
     }
 
     public static function is_open($timestamp = null){
         list($weekly, $holidays) = self::get_data();
-        $ts      = $timestamp ? $timestamp : time();
-        $today   = date('Y-m-d', $ts);
-        $time    = date('H:i', $ts);
-        $dayname = date('l', $ts);
-
-        if (is_array($holidays)) {
-            foreach ($holidays as $h) {
-                if ($today >= $h['from'] && $today <= $h['to']){
-                    if (isset($h['closed'])) return false;
-                    return ($time >= $h['open'] && $time < $h['close']);
-                }
-            }
+        $ts   = $timestamp ? $timestamp : time();
+        $date = date('Y-m-d', $ts);
+        $time = date('H:i', $ts);
+        $ints = self::get_intervals_for_date($weekly, $holidays, $date);
+        foreach ($ints as $i) {
+            if ($time >= $i[0] && $time < $i[1]) return true;
         }
-        if (!empty($weekly[$dayname]['closed'])){
-            return false;
-        }
-        return ($time >= $weekly[$dayname]['open'] && $time < $weekly[$dayname]['close']);
+        return false;
     }
 
     public static function fullweek(){
         list($weekly,) = self::get_data();
         $out         = '<table class="simple-hours-table">';
         $current_day = date('l');
+        $second      = get_option(SH_Settings::OPTION_SECOND, false);
 
         if (is_array($weekly)) {
             foreach ($weekly as $day => $v) {
                 $row_class = $day === $current_day ? ' class="simple-hours-current-day"' : '';
                 if (!empty($v['closed'])) {
-                    $hours = 'Closed';
+                    $hours1 = 'Closed';
+                    $hours2 = '';
                 } else {
-                    $hours = "{$v['open']} - {$v['close']}";
+                    $hours1 = !empty($v['open']) && !empty($v['close']) ? "{$v['open']} - {$v['close']}" : '';
+                    $hours2 = ($second && !empty($v['open2']) && !empty($v['close2'])) ? "{$v['open2']} - {$v['close2']}" : '';
                 }
-                $out .= "<tr{$row_class}><th class=\"simple-hours-day\">$day</th><td class=\"simple-hours-time\">$hours</td></tr>";
+                if ($second) {
+                    $out .= "<tr{$row_class}><th class=\"simple-hours-day\">$day</th><td class=\"simple-hours-time\">$hours1</td><td class=\"simple-hours-time\">$hours2</td></tr>";
+                } else {
+                    $out .= "<tr{$row_class}><th class=\"simple-hours-day\">$day</th><td class=\"simple-hours-time\">$hours1</td></tr>";
+                }
             }
         }
 

@@ -12,6 +12,7 @@ class SimpleHours_Shortcodes_Test extends WP_UnitTestCase {
             'Sunday' => array('closed' => 1)
         ));
         update_option('sh_holiday_overrides', array());
+        update_option('sh_second_hours', 0);
     }
 
     public function test_today_shortcode_outputs_text() {
@@ -33,5 +34,24 @@ class SimpleHours_Shortcodes_Test extends WP_UnitTestCase {
         $this->assertTrue( SH_Shortcodes::is_open( $open_time ) );
         $this->assertFalse( SH_Shortcodes::is_open( $closed_time ) );
         $this->assertFalse( SH_Shortcodes::is_open( $weekend_time ) );
+    }
+
+    public function test_second_hours() {
+        update_option('sh_second_hours', 1);
+        update_option('sh_weekly_hours', array(
+            'Monday' => array('open' => '09:00', 'close' => '14:00', 'open2' => '17:00', 'close2' => '22:00'),
+            'Tuesday' => array('closed' => 1),
+            'Wednesday' => array('closed' => 1),
+            'Thursday' => array('closed' => 1),
+            'Friday' => array('closed' => 1),
+            'Saturday' => array('closed' => 1),
+            'Sunday' => array('closed' => 1),
+        ));
+
+        $evening_time = strtotime('2023-06-26 18:00:00'); // Monday 18:00
+        $this->assertTrue( SH_Shortcodes::is_open( $evening_time ) );
+
+        $output = do_shortcode('[simplehours_fullweek]');
+        $this->assertStringContainsString('17:00 - 22:00', $output);
     }
 }
