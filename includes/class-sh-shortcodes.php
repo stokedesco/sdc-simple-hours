@@ -93,16 +93,18 @@ class SH_Shortcodes {
 
     public static function fullweek(){
         list($weekly,) = self::get_data();
-        $out = '<table>';
+        $out         = '<table class="simple-hours-table">';
+        $current_day = date('l');
 
         if (is_array($weekly)) {
             foreach ($weekly as $day => $v) {
+                $row_class = $day === $current_day ? ' class="simple-hours-current-day"' : '';
                 if (!empty($v['closed'])) {
                     $hours = 'Closed';
                 } else {
                     $hours = "{$v['open']} - {$v['close']}";
                 }
-                $out .= "<tr><th>$day</th><td>$hours</td></tr>";
+                $out .= "<tr{$row_class}><th class=\"simple-hours-day\">$day</th><td class=\"simple-hours-time\">$hours</td></tr>";
             }
         }
 
