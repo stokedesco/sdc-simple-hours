@@ -11,7 +11,7 @@ class SH_Settings {
     }
 
     public function add_admin_menu(){
-        add_options_page('Simple Hours', 'Simple Hours', 'manage_options', 'simple_hours', array($this,'options_page'));
+        add_options_page('Stoke Simple Hours', 'Stoke Simple Hours', 'manage_options', 'simple_hours', array($this,'options_page'));
     }
 
     public function settings_init(){
@@ -86,8 +86,8 @@ class SH_Settings {
         echo '<p>Use these shortcodes to display opening hours:</p>';
         echo '<ul>';
         echo '<li><code>[simplehours_today]</code> – e.g. “We\'re open from 9:00 to 17:00.”</li>';
-        echo '<li><code>[simplehours_until]</code> – e.g. “Open until 17:00.”</li>';
-        echo '<li><code>[simplehours_fullweek]</code> – outputs a weekly table of hours.</li>';
+        echo '<li><code>[simplehours_until]</code> – e.g. “Open today until 17:00.”</li>';
+        echo '<li><code>[simplehours_fullweek]</code> – outputs a full week table of hours.</li>';
         echo '</ul>';
     }
 
@@ -99,7 +99,7 @@ class SH_Settings {
     public function options_page(){
         ?>
         <div class="wrap">
-            <h1>Simple Hours Settings</h1>
+            <h1>Stoke Simple Hours Settings</h1>
             <form method="post" action="options.php">
             <?php
             settings_fields('sh_settings');

@@ -47,7 +47,7 @@ class SH_Shortcodes {
                         return "Next open at " . self::get_open_time($weekly, $holidays, $tom);
                     }
                     if ($time < $h['close']){
-                        return "Open until {$h['close']}.";
+                        return "Open today until {$h['close']}.";
                     }
                     return "Next open at " . self::get_open_time($weekly, $holidays, $today);
                 }
@@ -75,7 +75,7 @@ class SH_Shortcodes {
             }
         }
         if ($time < $weekly[$day]['close']){
-            return "Open until " . $weekly[$day]['close'] . ".";
+            return "Open today until " . $weekly[$day]['close'] . ".";
         }
     }
 

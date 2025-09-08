@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: Simple Hours
+Plugin Name: Stoke Simple Hours
 Description: Lean plugin for setting weekly hours and holiday overrides.
 Version: 1.0
 Author: Stoke Design Co
