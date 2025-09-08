@@ -27,4 +27,9 @@ require_once SH_DIR . 'includes/class-sh-logger.php';
 
 add_action( 'plugins_loaded', array( 'SH_Shortcodes', 'init' ) );
 
+add_action( 'elementor/widgets/register', function( $widgets_manager ) {
+    require_once SH_DIR . 'includes/class-sh-elementor-widget.php';
+    $widgets_manager->register( new SH_Elementor_Widget() );
+} );
+
 
