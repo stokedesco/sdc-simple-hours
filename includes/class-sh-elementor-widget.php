@@ -98,6 +98,7 @@ class SH_Elementor_Widget extends \Elementor\Widget_Base {
             'condition' => [ 'text_icon[value]!' => '' ],
             'selectors' => [
                 '{{WRAPPER}} .simple-hours-output .simple-hours-icon-open' => 'color: {{VALUE}};',
+                '{{WRAPPER}} .simple-hours-output .simple-hours-icon-open i' => 'color: {{VALUE}};',
                 '{{WRAPPER}} .simple-hours-output .simple-hours-icon-open svg' => 'fill: {{VALUE}}; stroke: {{VALUE}};',
                 '{{WRAPPER}} .simple-hours-output .simple-hours-icon-open svg *' => 'fill: {{VALUE}}; stroke: {{VALUE}};',
             ],
@@ -109,6 +110,7 @@ class SH_Elementor_Widget extends \Elementor\Widget_Base {
             'condition' => [ 'text_icon[value]!' => '' ],
             'selectors' => [
                 '{{WRAPPER}} .simple-hours-output .simple-hours-icon-closed' => 'color: {{VALUE}};',
+                '{{WRAPPER}} .simple-hours-output .simple-hours-icon-closed i' => 'color: {{VALUE}};',
                 '{{WRAPPER}} .simple-hours-output .simple-hours-icon-closed svg' => 'fill: {{VALUE}}; stroke: {{VALUE}};',
                 '{{WRAPPER}} .simple-hours-output .simple-hours-icon-closed svg *' => 'fill: {{VALUE}}; stroke: {{VALUE}};',
             ],
@@ -127,7 +129,9 @@ class SH_Elementor_Widget extends \Elementor\Widget_Base {
             'default' => [ 'size' => 20, 'unit' => 'px' ],
             'condition' => [ 'text_icon[value]!' => '' ],
             'selectors' => [
+
                 '{{WRAPPER}} .simple-hours-output .simple-hours-icon' => 'font-size: {{SIZE}}{{UNIT}}; width: {{SIZE}}{{UNIT}}; height: {{SIZE}}{{UNIT}};',
+
                 '{{WRAPPER}} .simple-hours-output .simple-hours-icon svg' => 'width: {{SIZE}}{{UNIT}}; height: {{SIZE}}{{UNIT}};',
             ],
         ] );
