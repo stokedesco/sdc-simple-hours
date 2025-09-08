@@ -97,7 +97,12 @@ class SH_Elementor_Widget extends \Elementor\Widget_Base {
             'type'      => \Elementor\Controls_Manager::COLOR,
             'condition' => [ 'text_icon[value]!' => '' ],
             'selectors' => [
-                '{{WRAPPER}} .simple-hours-output .simple-hours-icon-open, {{WRAPPER}} .simple-hours-output .simple-hours-icon-open *' => 'color: {{VALUE}}; fill: {{VALUE}}; stroke: {{VALUE}};',
+
+                '{{WRAPPER}} .simple-hours-output .simple-hours-icon-open' => 'color: {{VALUE}};',
+                '{{WRAPPER}} .simple-hours-output .simple-hours-icon-open i' => 'color: {{VALUE}};',
+                '{{WRAPPER}} .simple-hours-output .simple-hours-icon-open svg' => 'fill: {{VALUE}}; stroke: {{VALUE}};',
+                '{{WRAPPER}} .simple-hours-output .simple-hours-icon-open svg *' => 'fill: {{VALUE}}; stroke: {{VALUE}};',
+
             ],
         ] );
 
@@ -106,7 +111,9 @@ class SH_Elementor_Widget extends \Elementor\Widget_Base {
             'type'      => \Elementor\Controls_Manager::COLOR,
             'condition' => [ 'text_icon[value]!' => '' ],
             'selectors' => [
+
                 '{{WRAPPER}} .simple-hours-output .simple-hours-icon-closed, {{WRAPPER}} .simple-hours-output .simple-hours-icon-closed *' => 'color: {{VALUE}}; fill: {{VALUE}}; stroke: {{VALUE}};',
+
             ],
         ] );
 
@@ -125,6 +132,7 @@ class SH_Elementor_Widget extends \Elementor\Widget_Base {
             'selectors' => [
                 '{{WRAPPER}} .simple-hours-output .simple-hours-icon-prepend' => 'margin-right: {{SIZE}}{{UNIT}};',
                 '{{WRAPPER}} .simple-hours-output .simple-hours-icon-append' => 'margin-left: {{SIZE}}{{UNIT}};',
+
             ],
         ] );
 
@@ -141,7 +149,9 @@ class SH_Elementor_Widget extends \Elementor\Widget_Base {
             'default' => [ 'size' => 20, 'unit' => 'px' ],
             'condition' => [ 'text_icon[value]!' => '' ],
             'selectors' => [
+
                 '{{WRAPPER}} .simple-hours-output .simple-hours-icon' => 'font-size: {{SIZE}}{{UNIT}}; width: {{SIZE}}{{UNIT}}; height: {{SIZE}}{{UNIT}}; line-height: {{SIZE}}{{UNIT}}; display: inline-block; vertical-align: middle;',
+
                 '{{WRAPPER}} .simple-hours-output .simple-hours-icon svg' => 'width: {{SIZE}}{{UNIT}}; height: {{SIZE}}{{UNIT}};',
             ],
         ] );
@@ -392,6 +402,7 @@ class SH_Elementor_Widget extends \Elementor\Widget_Base {
             $icon_class     = $is_open
                 ? 'elementor-icon simple-hours-icon ' . $position_class . ' simple-hours-icon-open'
                 : 'elementor-icon simple-hours-icon ' . $position_class . ' simple-hours-icon-closed';
+
 
             ob_start();
             \Elementor\Icons_Manager::render_icon(
