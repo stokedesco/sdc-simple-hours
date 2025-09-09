@@ -38,9 +38,11 @@ class SH_Schema {
             }
         }
 
+
         if (! empty($schema['openingHoursSpecification'])) {
             echo "<script type='application/ld+json'>" . wp_json_encode($schema) . "</script>";
         }
+
     }
 }
 new SH_Schema();

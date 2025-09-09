@@ -17,6 +17,7 @@ class SimpleHours_Shortcodes_Test extends WP_UnitTestCase {
         update_option('sh_holiday_pre_before', 'We will be closed for the');
         update_option('sh_holiday_pre_during', 'We are closed for the');
         update_option('sh_holiday_post', 'reopening on');
+
     }
 
     public function test_today_shortcode_outputs_text() {

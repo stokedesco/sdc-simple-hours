@@ -47,6 +47,7 @@ class SH_Shortcodes {
 
     public static function until(){
         list($weekly, $holidays) = self::get_data();
+
         $now      = new DateTime('now', wp_timezone());
         $today    = $now->format('Y-m-d');
         $time     = $now->format('H:i');
@@ -129,6 +130,7 @@ class SH_Shortcodes {
                 $out[] = array($finish, $c);
             }
         }
+
         return $out;
     }
 
@@ -147,6 +149,7 @@ class SH_Shortcodes {
         list($weekly, $holidays) = self::get_data();
 
 
+
         $tz = wp_timezone();
 
         if ($timestamp) {
@@ -159,6 +162,7 @@ class SH_Shortcodes {
         $date = $now->format('Y-m-d');
         $time = $now->format('H:i');
 
+
         $ints = self::get_intervals_for_date($weekly, $holidays, $date);
         foreach ($ints as $i) {
             if ($time >= $i[0] && $time < $i[1]) return true;
@@ -167,9 +171,11 @@ class SH_Shortcodes {
     }
 
     public static function fullweek(){
+
         list($weekly, $holidays) = self::get_data();
         $out         = '<table class="simple-hours-table">';
         $current_day = wp_date('l');
+
         $second      = get_option(SH_Settings::OPTION_SECOND, false);
 
         if (is_array($weekly)) {
@@ -178,6 +184,7 @@ class SH_Shortcodes {
                 if (!empty($v['closed'])) {
                     $hours1 = 'Closed';
                     $hours2 = '';
+
                 } else {
                     $hours1 = !empty($v['open']) && !empty($v['close']) ? self::format_time($v['open']) . ' - ' . self::format_time($v['close']) : '';
                     $hours2 = ($second && !empty($v['open2']) && !empty($v['close2'])) ? self::format_time($v['open2']) . ' - ' . self::format_time($v['close2']) : '';
@@ -185,6 +192,7 @@ class SH_Shortcodes {
                 if ($second) {
                     $out .= "<tr{$row_class}><th class=\"simple-hours-day\">$day</th><td class=\"simple-hours-time\">$hours1</td><td class=\"simple-hours-time\">$hours2</td></tr>";
                 } else {
+
                     $out .= "<tr{$row_class}><th class=\"simple-hours-day\">$day</th><td class=\"simple-hours-time\">$hours1</td></tr>";
                 }
             }

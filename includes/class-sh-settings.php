@@ -12,6 +12,7 @@ class SH_Settings {
     const OPTION_HOLIDAY_PRE_DURING = 'sh_holiday_pre_during';
     const OPTION_HOLIDAY_POST = 'sh_holiday_post';
 
+
     public function __construct() {
         add_action('admin_menu', array($this,'add_admin_menu'));
         add_action('admin_init', array($this,'settings_init'));
