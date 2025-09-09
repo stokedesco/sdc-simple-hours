@@ -1,0 +1,24 @@
+/* Admin styles for Simple Hours settings */
+.sh-settings .sh-table {
+    border-collapse: collapse;
+    margin-bottom: 15px;
+    width: 100%;
+}
+.sh-settings .sh-table th,
+.sh-settings .sh-table td {
+    padding: 6px 10px;
+}
+.sh-settings .sh-table input[type="time"],
+.sh-settings .sh-table input[type="date"],
+.sh-settings .sh-table input[type="text"] {
+    width: 100%;
+}
+.sh-settings .sh-field {
+    display: block;
+    margin: 8px 0;
+}
+.sh-footer-credit {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 0.9em;
+}

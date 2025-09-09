@@ -38,24 +38,11 @@ class SH_Schema {
             }
         }
 
-        if (is_array($holidays)) {
-            foreach ($holidays as $h) {
-                if (isset($h['closed'])) {
-                    continue;
-                }
-                $schema['openingHoursSpecification'][] = array(
-                    '@type'        => 'OpeningHoursSpecification',
-                    'validFrom'    => $h['from'],
-                    'validThrough' => $h['to'],
-                    'opens'        => $h['open'],
-                    'closes'       => $h['close'],
-                );
-            }
-        }
 
         if (! empty($schema['openingHoursSpecification'])) {
             echo "<script type='application/ld+json'>" . wp_json_encode($schema) . "</script>";
         }
+
     }
 }
 new SH_Schema();
