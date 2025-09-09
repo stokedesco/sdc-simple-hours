@@ -4,6 +4,7 @@ class SH_Shortcodes {
         add_shortcode('simplehours_today', array(__CLASS__,'today'));
         add_shortcode('simplehours_until', array(__CLASS__,'until'));
         add_shortcode('simplehours_fullweek', array(__CLASS__,'fullweek'));
+        add_shortcode('holiday-message', array(__CLASS__,'holiday_message'));
     }
 
     public static function get_data(){
@@ -27,8 +28,6 @@ class SH_Shortcodes {
                         }
                         break;
                     }
-                    $label = empty($h['label']) ? '' : " ({$h['label']})";
-                    return "We're open from " . self::format_time($h['open']) . " to " . self::format_time($h['close']) . "{$label}.";
                 }
             }
         }
@@ -93,7 +92,6 @@ class SH_Shortcodes {
                         }
                         return array();
                     }
-                    return array(array($h['open'], $h['close']));
                 }
             }
         }
@@ -193,12 +191,6 @@ class SH_Shortcodes {
         }
 
         $out .= '</table>';
-
-        $message = self::get_holiday_message($weekly, $holidays);
-        if ($message) {
-            $out .= '<div class="simple-hours-holiday-text">' . esc_html($message) . '</div>';
-        }
-
         return $out;
     }
 
@@ -235,6 +227,15 @@ class SH_Shortcodes {
             $current = wp_date('Y-m-d', strtotime($current . ' +1 day'));
         }
         return $date;
+    }
+
+    public static function holiday_message(){
+        list($weekly, $holidays) = self::get_data();
+        $message = self::get_holiday_message($weekly, $holidays);
+        if ($message){
+            return '<div class="simple-hours-holiday-text">' . esc_html($message) . '</div>';
+        }
+        return '';
     }
 
 }

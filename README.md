@@ -6,7 +6,7 @@
 2. Activate the plugin through the 'Plugins' screen in WordPress.
 3. Go to **Simple Hours** in the admin menu to configure your weekly hours and holiday overrides, including holiday messages.
    - Holiday overrides now support start and finish times for partial-day closures.
-   - Holiday messages appear beneath the weekly hours table for easier styling.
+   - Display holiday notices separately with the `[holiday-message]` shortcode.
 4. Select your preferred 12-hour or 24-hour time display.
 5. Optionally enable schema.org markup to output structured data for search engines.
 
@@ -16,6 +16,7 @@
   - `[simplehours_today]` – Today's hours
   - `[simplehours_until]` – Open today until
   - `[simplehours_fullweek]` – Full week table
+  - `[holiday-message]` – Current or upcoming holiday message
 
 - Elementor:
   - Add the **Stoke Simple Hours** widget and choose the output format along with text or table styling.

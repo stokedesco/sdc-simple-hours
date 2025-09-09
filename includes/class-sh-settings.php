@@ -95,15 +95,13 @@ class SH_Settings {
     public function holidays_render(){
         $values = get_option(self::OPTION_HOLIDAYS, array());
         echo '<table id="sh-holidays">';
-        echo '<tr><th>From</th><th>To</th><th>Label</th><th>Closed?</th><th>Start</th><th>Finish</th><th>Open</th><th>Close</th><th>Action</th></tr>';
+        echo '<tr><th>From</th><th>To</th><th>Label</th><th>Closed?</th><th>Start</th><th>Finish</th><th>Action</th></tr>';
         if (is_array($values)){
             foreach($values as $i=>$h){
                 $from=esc_attr($h['from']);
                 $to=esc_attr($h['to']);
                 $label=esc_attr($h['label']);
                 $closed=isset($h['closed'])?$h['closed']:false;
-                $open=esc_attr($h['open']??'');
-                $close=esc_attr($h['close']??'');
                 $start=esc_attr($h['start']??'');
                 $finish=esc_attr($h['finish']??'');
                 echo "<tr>";
@@ -113,8 +111,6 @@ class SH_Settings {
                 echo "<td><input type='checkbox' name='".self::OPTION_HOLIDAYS."[{$i}][closed]' value='1' ".($closed?'checked':'')." class='sh-holiday-closed'></td>";
                 echo "<td><input type='time' name='".self::OPTION_HOLIDAYS."[{$i}][start]' value='".($closed?$start:'')."' ".($closed?'':'disabled')." /></td>";
                 echo "<td><input type='time' name='".self::OPTION_HOLIDAYS."[{$i}][finish]' value='".($closed?$finish:'')."' ".($closed?'':'disabled')." /></td>";
-                echo "<td><input type='time' name='".self::OPTION_HOLIDAYS."[{$i}][open]' value='".($closed?'':$open)."' ".($closed?'disabled':'')." /></td>";
-                echo "<td><input type='time' name='".self::OPTION_HOLIDAYS."[{$i}][close]' value='".($closed?'':$close)."' ".($closed?'disabled':'')." /></td>";
                 echo "<td><button class='button sh-remove-holiday'>Remove</button></td>";
                 echo "</tr>";
             }
@@ -158,6 +154,7 @@ class SH_Settings {
         echo '<li><code>[simplehours_today]</code> – e.g. “We\'re open from 9:00 to 17:00.”</li>';
         echo '<li><code>[simplehours_until]</code> – e.g. “Open today until 17:00.”</li>';
         echo '<li><code>[simplehours_fullweek]</code> – outputs a full week table of hours.</li>';
+        echo '<li><code>[holiday-message]</code> – displays the current or upcoming holiday message.</li>';
         echo '</ul>';
     }
 
