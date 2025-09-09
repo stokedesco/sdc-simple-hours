@@ -8,6 +8,9 @@ class SH_Settings {
     const OPTION_SCHEMA_TYPE = 'sh_schema_type';
     const OPTION_SECOND = 'sh_second_hours';
     const OPTION_TIME_FORMAT = 'sh_time_format';
+    const OPTION_HOLIDAY_PRE_BEFORE = 'sh_holiday_pre_before';
+    const OPTION_HOLIDAY_PRE_DURING = 'sh_holiday_pre_during';
+    const OPTION_HOLIDAY_POST = 'sh_holiday_post';
 
     public function __construct() {
         add_action('admin_menu', array($this,'add_admin_menu'));
@@ -16,7 +19,7 @@ class SH_Settings {
     }
 
     public function add_admin_menu(){
-        add_options_page('Stoke Simple Hours', 'Stoke Simple Hours', 'manage_options', 'simple_hours', array($this,'options_page'));
+        add_menu_page('Stoke Simple Hours', 'Simple Hours', 'manage_options', 'simple_hours', array($this,'options_page'), 'dashicons-clock');
     }
 
     public function settings_init(){
@@ -28,6 +31,9 @@ class SH_Settings {
         register_setting('sh_settings', self::OPTION_SCHEMA_TYPE);
         register_setting('sh_settings', self::OPTION_SECOND);
         register_setting('sh_settings', self::OPTION_TIME_FORMAT);
+        register_setting('sh_settings', self::OPTION_HOLIDAY_PRE_BEFORE);
+        register_setting('sh_settings', self::OPTION_HOLIDAY_PRE_DURING);
+        register_setting('sh_settings', self::OPTION_HOLIDAY_POST);
 
         add_settings_section('sh_section', 'Settings', null, 'sh_settings');
 
@@ -35,6 +41,9 @@ class SH_Settings {
         add_settings_field('sh_second', 'Enable Second Hours', array($this,'second_render'), 'sh_settings','sh_section');
         add_settings_field('sh_weekly', 'Weekly Hours', array($this,'weekly_render'), 'sh_settings','sh_section');
         add_settings_field('sh_holidays','Holiday Overrides', array($this,'holidays_render'),'sh_settings','sh_section');
+        add_settings_field('sh_holiday_pre_before','Upcoming Holiday Text', array($this,'holiday_pre_before_render'),'sh_settings','sh_section');
+        add_settings_field('sh_holiday_pre_during','Active Holiday Text', array($this,'holiday_pre_during_render'),'sh_settings','sh_section');
+        add_settings_field('sh_holiday_post','Holiday Post Text', array($this,'holiday_post_render'),'sh_settings','sh_section');
         add_settings_field('sh_debug','Debug Mode', array($this,'debug_render'),'sh_settings','sh_section');
         add_settings_field('sh_schema','Schema Markup', array($this,'schema_render'),'sh_settings','sh_section');
 
@@ -110,6 +119,21 @@ class SH_Settings {
         echo '<button class="button" id="sh-add-holiday">Add Holiday</button>';
     }
 
+    public function holiday_pre_before_render(){
+        $val = get_option(self::OPTION_HOLIDAY_PRE_BEFORE, 'We will be closed for the');
+        echo "<input type='text' name='".self::OPTION_HOLIDAY_PRE_BEFORE."' value='".esc_attr($val)."' class='regular-text' />";
+    }
+
+    public function holiday_pre_during_render(){
+        $val = get_option(self::OPTION_HOLIDAY_PRE_DURING, 'We are closed for the');
+        echo "<input type='text' name='".self::OPTION_HOLIDAY_PRE_DURING."' value='".esc_attr($val)."' class='regular-text' />";
+    }
+
+    public function holiday_post_render(){
+        $val = get_option(self::OPTION_HOLIDAY_POST, 'reopening on');
+        echo "<input type='text' name='".self::OPTION_HOLIDAY_POST."' value='".esc_attr($val)."' class='regular-text' />";
+    }
+
     public function debug_render(){
         $val = get_option(self::OPTION_DEBUG, false);
         echo "<label><input type='checkbox' name='".self::OPTION_DEBUG."' value='1' ".($val?'checked':'')."/> Enable Debug Mode</label>";
@@ -134,7 +158,7 @@ class SH_Settings {
     }
 
     public function enqueue_scripts($hook){
-        if ($hook!='settings_page_simple_hours') return;
+        if ($hook!='toplevel_page_simple_hours') return;
         wp_enqueue_script('simple-hours-admin', SH_URL.'assets/admin.js', array('jquery'), null, true);
     }
 

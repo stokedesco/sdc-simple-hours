@@ -131,7 +131,7 @@ class SH_Shortcodes {
     }
 
     public static function fullweek(){
-        list($weekly,) = self::get_data();
+        list($weekly, $holidays) = self::get_data();
         $out         = '<table class="simple-hours-table">';
         $current_day = wp_date('l');
         $second      = get_option(SH_Settings::OPTION_SECOND, false);
@@ -154,8 +154,39 @@ class SH_Shortcodes {
             }
         }
 
+        $message = self::get_holiday_message($holidays);
+        if ($message) {
+            $colspan = $second ? 3 : 2;
+            $out .= '<tr class="simple-hours-holiday"><td colspan="' . $colspan . '" class="simple-hours-holiday-text">' . esc_html($message) . '</td></tr>';
+        }
+
         $out .= '</table>';
         return $out;
+    }
+
+    private static function get_holiday_message($holidays){
+        if (!is_array($holidays)) return '';
+        $today = wp_date('Y-m-d');
+        $limit = wp_date('Y-m-d', strtotime($today . ' +14 days'));
+        $pre_before = get_option(SH_Settings::OPTION_HOLIDAY_PRE_BEFORE, 'We will be closed for the');
+        $pre_during = get_option(SH_Settings::OPTION_HOLIDAY_PRE_DURING, 'We are closed for the');
+        $post = get_option(SH_Settings::OPTION_HOLIDAY_POST, 'reopening on');
+
+        foreach ($holidays as $h) {
+            if (empty($h['closed'])) continue;
+            $from = $h['from'] ?? '';
+            $to   = $h['to'] ?? '';
+            if (!$from || !$to) continue;
+            if ($today >= $from && $today <= $to) {
+                $end = wp_date(get_option('date_format'), strtotime($to));
+                return trim($pre_during) . ' ' . $h['label'] . ', ' . trim($post) . ' ' . $end;
+            }
+            if ($from > $today && $from <= $limit) {
+                $end = wp_date(get_option('date_format'), strtotime($to));
+                return trim($pre_before) . ' ' . $h['label'] . ' ' . trim($post) . ' ' . $end;
+            }
+        }
+        return '';
     }
 
 }
