@@ -109,9 +109,18 @@ class SH_Shortcodes {
 
     public static function is_open($timestamp = null){
         list($weekly, $holidays) = self::get_data();
-        $ts   = $timestamp ? $timestamp : current_time('timestamp');
-        $date = wp_date('Y-m-d', $ts);
-        $time = wp_date('H:i', $ts);
+
+        $tz = wp_timezone();
+
+        if ($timestamp) {
+            $now = new DateTime("@{$timestamp}");
+            $now->setTimezone($tz);
+        } else {
+            $now = new DateTime('now', $tz);
+        }
+
+        $date = $now->format('Y-m-d');
+        $time = $now->format('H:i');
         $ints = self::get_intervals_for_date($weekly, $holidays, $date);
         foreach ($ints as $i) {
             if ($time >= $i[0] && $time < $i[1]) return true;
