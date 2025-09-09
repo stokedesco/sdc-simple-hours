@@ -14,6 +14,9 @@ class SimpleHours_Shortcodes_Test extends WP_UnitTestCase {
         update_option('sh_holiday_overrides', array());
         update_option('sh_second_hours', 0);
         update_option('sh_time_format', '24');
+        update_option('sh_holiday_pre_before', 'We will be closed for the');
+        update_option('sh_holiday_pre_during', 'We are closed for the');
+        update_option('sh_holiday_post', 'reopening on');
     }
 
     public function test_today_shortcode_outputs_text() {
@@ -67,5 +70,27 @@ class SimpleHours_Shortcodes_Test extends WP_UnitTestCase {
         $dt = new DateTime('2023-06-26 16:23:00', new DateTimeZone('America/New_York'));
         $ts = $dt->getTimestamp();
         $this->assertTrue( SH_Shortcodes::is_open( $ts ) );
+    }
+
+    public function test_fullweek_shows_upcoming_holiday_message() {
+        $today = wp_date('Y-m-d');
+        $from = wp_date('Y-m-d', strtotime($today . ' +7 days'));
+        $to   = wp_date('Y-m-d', strtotime($today . ' +10 days'));
+        update_option('sh_holiday_overrides', array(
+            array('from' => $from, 'to' => $to, 'label' => 'Test Holiday', 'closed' => 1)
+        ));
+        $output = do_shortcode('[simplehours_fullweek]');
+        $this->assertStringContainsString('Test Holiday', $output);
+    }
+
+    public function test_fullweek_shows_active_holiday_message() {
+        $today = wp_date('Y-m-d');
+        $to   = wp_date('Y-m-d', strtotime($today . ' +3 days'));
+        update_option('sh_holiday_overrides', array(
+            array('from' => $today, 'to' => $to, 'label' => 'Active Holiday', 'closed' => 1)
+        ));
+        $output = do_shortcode('[simplehours_fullweek]');
+        $this->assertStringContainsString('Active Holiday', $output);
+        $this->assertStringContainsString('We are closed for the', $output);
     }
 }
