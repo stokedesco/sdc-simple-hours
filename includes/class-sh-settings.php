@@ -95,7 +95,7 @@ class SH_Settings {
     public function holidays_render(){
         $values = get_option(self::OPTION_HOLIDAYS, array());
         echo '<table id="sh-holidays">';
-        echo '<tr><th>From</th><th>To</th><th>Label</th><th>Closed?</th><th>Open</th><th>Close</th><th>Action</th></tr>';
+        echo '<tr><th>From</th><th>To</th><th>Label</th><th>Closed?</th><th>Start</th><th>Finish</th><th>Open</th><th>Close</th><th>Action</th></tr>';
         if (is_array($values)){
             foreach($values as $i=>$h){
                 $from=esc_attr($h['from']);
@@ -104,11 +104,15 @@ class SH_Settings {
                 $closed=isset($h['closed'])?$h['closed']:false;
                 $open=esc_attr($h['open']??'');
                 $close=esc_attr($h['close']??'');
+                $start=esc_attr($h['start']??'');
+                $finish=esc_attr($h['finish']??'');
                 echo "<tr>";
                 echo "<td><input type='date' name='".self::OPTION_HOLIDAYS."[{$i}][from]' value='{$from}' /></td>";
                 echo "<td><input type='date' name='".self::OPTION_HOLIDAYS."[{$i}][to]' value='{$to}' /></td>";
                 echo "<td><input type='text' name='".self::OPTION_HOLIDAYS."[{$i}][label]' value='{$label}' /></td>";
                 echo "<td><input type='checkbox' name='".self::OPTION_HOLIDAYS."[{$i}][closed]' value='1' ".($closed?'checked':'')." class='sh-holiday-closed'></td>";
+                echo "<td><input type='time' name='".self::OPTION_HOLIDAYS."[{$i}][start]' value='".($closed?$start:'')."' ".($closed?'':'disabled')." /></td>";
+                echo "<td><input type='time' name='".self::OPTION_HOLIDAYS."[{$i}][finish]' value='".($closed?$finish:'')."' ".($closed?'':'disabled')." /></td>";
                 echo "<td><input type='time' name='".self::OPTION_HOLIDAYS."[{$i}][open]' value='".($closed?'':$open)."' ".($closed?'disabled':'')." /></td>";
                 echo "<td><input type='time' name='".self::OPTION_HOLIDAYS."[{$i}][close]' value='".($closed?'':$close)."' ".($closed?'disabled':'')." /></td>";
                 echo "<td><button class='button sh-remove-holiday'>Remove</button></td>";
