@@ -110,6 +110,7 @@ class SH_Shortcodes {
     public static function is_open($timestamp = null){
         list($weekly, $holidays) = self::get_data();
 
+
         $tz = wp_timezone();
 
         if ($timestamp) {
@@ -121,6 +122,7 @@ class SH_Shortcodes {
 
         $date = $now->format('Y-m-d');
         $time = $now->format('H:i');
+
         $ints = self::get_intervals_for_date($weekly, $holidays, $date);
         foreach ($ints as $i) {
             if ($time >= $i[0] && $time < $i[1]) return true;
