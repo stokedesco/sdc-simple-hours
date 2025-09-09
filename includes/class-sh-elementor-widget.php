@@ -106,18 +106,33 @@ class SH_Elementor_Widget extends \Elementor\Widget_Base {
         $this->add_control( 'icon_color_open', [
             'label'     => __( 'Icon Color (Open)', 'simple-hours' ),
             'type'      => \Elementor\Controls_Manager::COLOR,
-            'condition' => [ 'icon_open[value]!' => '' ],
+
+            'conditions' => [
+                'relation' => 'or',
+                'terms'    => [
+                    [ 'name' => 'icon_open[value]',   'operator' => '!=', 'value' => '' ],
+                    [ 'name' => 'icon_closed[value]', 'operator' => '!=', 'value' => '' ],
+                ],
+            ],
             'selectors' => [
-                '{{WRAPPER}} .simple-hours-output .simple-hours-icon-open, {{WRAPPER}} .simple-hours-output .simple-hours-icon-open *' => 'color: {{VALUE}}; fill: {{VALUE}}; stroke: {{VALUE}};',
+                '{{WRAPPER}} .simple-hours-output.simple-hours-open .simple-hours-icon, {{WRAPPER}} .simple-hours-output.simple-hours-open .simple-hours-icon *' => 'color: {{VALUE}}; fill: {{VALUE}}; stroke: {{VALUE}};',
+
             ],
         ] );
 
         $this->add_control( 'icon_color_closed', [
             'label'     => __( 'Icon Color (Closed)', 'simple-hours' ),
             'type'      => \Elementor\Controls_Manager::COLOR,
-            'condition' => [ 'icon_closed[value]!' => '' ],
+
+            'conditions' => [
+                'relation' => 'or',
+                'terms'    => [
+                    [ 'name' => 'icon_open[value]',   'operator' => '!=', 'value' => '' ],
+                    [ 'name' => 'icon_closed[value]', 'operator' => '!=', 'value' => '' ],
+                ],
+            ],
             'selectors' => [
-                '{{WRAPPER}} .simple-hours-output .simple-hours-icon-closed, {{WRAPPER}} .simple-hours-output .simple-hours-icon-closed *' => 'color: {{VALUE}}; fill: {{VALUE}}; stroke: {{VALUE}};',
+                '{{WRAPPER}} .simple-hours-output.simple-hours-closed .simple-hours-icon, {{WRAPPER}} .simple-hours-output.simple-hours-closed .simple-hours-icon *' => 'color: {{VALUE}}; fill: {{VALUE}}; stroke: {{VALUE}};',
             ],
         ] );
 
@@ -406,9 +421,11 @@ class SH_Elementor_Widget extends \Elementor\Widget_Base {
         $settings = $this->get_settings_for_display();
         $format   = isset( $settings['format'] ) ? $settings['format'] : 'today';
 
-        $icon    = '';
-        $is_open = SH_Shortcodes::is_open();
-        $key     = $is_open ? 'icon_open' : 'icon_closed';
+        $icon         = '';
+        $is_open      = SH_Shortcodes::is_open();
+        $key          = $is_open ? 'icon_open' : 'icon_closed';
+        $wrapper_state = $is_open ? 'simple-hours-open' : 'simple-hours-closed';
+
 
         if ( ! empty( $settings[ $key ]['value'] ) ) {
             $position_class = ( 'append' === $settings['icon_position'] )
@@ -432,7 +449,7 @@ class SH_Elementor_Widget extends \Elementor\Widget_Base {
                 if ( $icon ) {
                     $out = ( 'append' === $settings['icon_position'] ) ? $out . $icon : $icon . $out;
                 }
-                echo '<div class="simple-hours-output">' . $out . '</div>';
+                echo '<div class="simple-hours-output ' . $wrapper_state . '">' . $out . '</div>';
                 break;
             case 'fullweek':
                 $out = SH_Shortcodes::fullweek();
@@ -444,7 +461,7 @@ class SH_Elementor_Widget extends \Elementor\Widget_Base {
                 if ( $icon ) {
                     $out = ( 'append' === $settings['icon_position'] ) ? $out . $icon : $icon . $out;
                 }
-                echo '<div class="simple-hours-output">' . $out . '</div>';
+                echo '<div class="simple-hours-output ' . $wrapper_state . '">' . $out . '</div>';
                 break;
         }
     }

@@ -109,14 +109,20 @@ class SH_Shortcodes {
 
     public static function is_open($timestamp = null){
         list($weekly, $holidays) = self::get_data();
-        // `current_time( 'timestamp' )` returns the timestamp in the site's
-        // timezone. Passing that directly to `wp_date()` (which expects a GMT
-        // timestamp) would apply the timezone offset twice and yield incorrect
-        // results. Fetch the GMT timestamp instead to ensure `wp_date()`
-        // converts it only once.
-        $ts   = $timestamp ? $timestamp : current_time( 'timestamp', true );
-        $date = wp_date('Y-m-d', $ts);
-        $time = wp_date('H:i', $ts);
+
+
+        $tz = wp_timezone();
+
+        if ($timestamp) {
+            $now = new DateTime("@{$timestamp}");
+            $now->setTimezone($tz);
+        } else {
+            $now = new DateTime('now', $tz);
+        }
+
+        $date = $now->format('Y-m-d');
+        $time = $now->format('H:i');
+
         $ints = self::get_intervals_for_date($weekly, $holidays, $date);
         foreach ($ints as $i) {
             if ($time >= $i[0] && $time < $i[1]) return true;
