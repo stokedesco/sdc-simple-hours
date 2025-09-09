@@ -61,4 +61,11 @@ class SimpleHours_Shortcodes_Test extends WP_UnitTestCase {
         $output = do_shortcode('[simplehours_fullweek]');
         $this->assertStringContainsString('9:00 AM - 5:00 PM', $output);
     }
+
+    public function test_is_open_respects_timezone() {
+        update_option('timezone_string', 'America/New_York');
+        $dt = new DateTime('2023-06-26 16:23:00', new DateTimeZone('America/New_York'));
+        $ts = $dt->getTimestamp();
+        $this->assertTrue( SH_Shortcodes::is_open( $ts ) );
+    }
 }
