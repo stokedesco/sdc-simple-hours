@@ -72,7 +72,7 @@ class SH_Settings {
         $values = get_option(self::OPTION_WEEKLY, array());
         $days = array('Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday');
         $second = get_option(self::OPTION_SECOND, false);
-        echo '<table>';
+        echo '<table class="sh-table">';
         foreach($days as $day){
             $open   = isset($values[$day]['open']) ? esc_attr($values[$day]['open']) : '';
             $close  = isset($values[$day]['close'])? esc_attr($values[$day]['close']):'';
@@ -94,7 +94,7 @@ class SH_Settings {
 
     public function holidays_render(){
         $values = get_option(self::OPTION_HOLIDAYS, array());
-        echo '<table id="sh-holidays">';
+        echo '<table id="sh-holidays" class="sh-table">';
         echo '<tr><th>From</th><th>To</th><th>Label</th><th>Closed?</th><th>Start</th><th>Finish</th><th>Action</th></tr>';
         if (is_array($values)){
             foreach($values as $i=>$h){
@@ -143,9 +143,9 @@ class SH_Settings {
         $enabled = get_option(self::OPTION_SCHEMA, false);
         $name    = get_option(self::OPTION_SCHEMA_NAME, get_bloginfo('name'));
         $type    = get_option(self::OPTION_SCHEMA_TYPE, 'LocalBusiness');
-        echo "<label><input type='checkbox' name='".self::OPTION_SCHEMA."' value='1' ".($enabled?'checked':'')."/> Enable schema.org markup</label><br />";
-        echo "<label>Business Name: <input type='text' name='".self::OPTION_SCHEMA_NAME."' value='".esc_attr($name)."' /></label><br />";
-        echo "<label>Business Type: <input type='text' name='".self::OPTION_SCHEMA_TYPE."' value='".esc_attr($type)."' /></label>";
+        echo "<label class='sh-field'><input type='checkbox' name='".self::OPTION_SCHEMA."' value='1' ".($enabled?'checked':'')."/> Enable schema.org markup</label>";
+        echo "<label class='sh-field'>Business Name: <input type='text' name='".self::OPTION_SCHEMA_NAME."' value='".esc_attr($name)."' /></label>";
+        echo "<label class='sh-field'>Business Type: <input type='text' name='".self::OPTION_SCHEMA_TYPE."' value='".esc_attr($type)."' /></label>";
     }
 
     public function shortcodes_info() {
@@ -160,12 +160,13 @@ class SH_Settings {
 
     public function enqueue_scripts($hook){
         if ($hook!='toplevel_page_simple_hours') return;
+        wp_enqueue_style('simple-hours-admin', SH_URL.'assets/admin.css');
         wp_enqueue_script('simple-hours-admin', SH_URL.'assets/admin.js', array('jquery'), null, true);
     }
 
     public function options_page(){
         ?>
-        <div class="wrap">
+        <div class="wrap sh-settings">
             <h1>Stoke Simple Hours Settings</h1>
             <form method="post" action="options.php">
             <?php
@@ -174,6 +175,7 @@ class SH_Settings {
             submit_button();
             ?>
             </form>
+            <p class="sh-footer-credit">Plugin built by <a href="https://stokedesign.co" target="_blank">Stoke Design Co</a></p>
         </div>
         <?php
     }
