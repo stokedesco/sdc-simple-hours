@@ -72,26 +72,28 @@ class SimpleHours_Shortcodes_Test extends WP_UnitTestCase {
         $this->assertTrue( SH_Shortcodes::is_open( $ts ) );
     }
 
-    public function test_fullweek_shows_upcoming_holiday_message() {
+    public function test_holiday_message_shortcode_upcoming() {
         $today = wp_date('Y-m-d');
         $from = wp_date('Y-m-d', strtotime($today . ' +7 days'));
         $to   = wp_date('Y-m-d', strtotime($today . ' +10 days'));
         update_option('sh_holiday_overrides', array(
             array('from' => $from, 'to' => $to, 'label' => 'Test Holiday', 'closed' => 1)
         ));
-        $output = do_shortcode('[simplehours_fullweek]');
-        $this->assertStringContainsString('Test Holiday', $output);
+        $fullweek = do_shortcode('[simplehours_fullweek]');
+        $message = do_shortcode('[holiday-message]');
+        $this->assertStringNotContainsString('Test Holiday', $fullweek);
+        $this->assertStringContainsString('Test Holiday', $message);
     }
 
-    public function test_fullweek_shows_active_holiday_message() {
+    public function test_holiday_message_shortcode_active() {
         $today = wp_date('Y-m-d');
         $to   = wp_date('Y-m-d', strtotime($today . ' +3 days'));
         update_option('sh_holiday_overrides', array(
             array('from' => $today, 'to' => $to, 'label' => 'Active Holiday', 'closed' => 1)
         ));
-        $output = do_shortcode('[simplehours_fullweek]');
-        $this->assertStringContainsString('Active Holiday', $output);
-        $this->assertStringContainsString('We are closed for the', $output);
+        $message = do_shortcode('[holiday-message]');
+        $this->assertStringContainsString('Active Holiday', $message);
+        $this->assertStringContainsString('We are closed for the', $message);
     }
 
     public function test_partial_holiday_closure(){
@@ -104,15 +106,15 @@ class SimpleHours_Shortcodes_Test extends WP_UnitTestCase {
         $this->assertTrue( SH_Shortcodes::is_open( $open_time ) );
     }
 
-    public function test_single_day_holiday_message_reopens_next_business_day(){
+    public function test_holiday_message_reopens_next_business_day(){
         $today = wp_date('Y-m-d');
         $next_monday = wp_date('Y-m-d', strtotime('next Monday', strtotime($today)));
         update_option('sh_holiday_overrides', array(
             array('from' => $next_monday, 'to' => $next_monday, 'label' => 'One Day Holiday', 'closed' => 1)
         ));
-        $output = do_shortcode('[simplehours_fullweek]');
+        $message = do_shortcode('[holiday-message]');
         $reopen = wp_date(get_option('date_format'), strtotime($next_monday . ' +1 day'));
-        $this->assertStringContainsString($reopen, $output);
+        $this->assertStringContainsString($reopen, $message);
     }
 }
 

@@ -7,7 +7,6 @@ jQuery(function($){
   $(document).on('change', '.sh-holiday-closed', function(){
     var row = $(this).closest('tr');
     var checked = $(this).is(':checked');
-    row.find('input[name*="[open]"], input[name*="[close]"]').prop('disabled', checked);
     row.find('input[name*="[start]"], input[name*="[finish]"]').prop('disabled', !checked);
   });
 
@@ -29,8 +28,6 @@ jQuery(function($){
       '<td><input type="checkbox" name="sh_holiday_overrides['+index+'][closed]" class="sh-holiday-closed" /></td>'+
       '<td><input type="time" name="sh_holiday_overrides['+index+'][start]" disabled /></td>'+
       '<td><input type="time" name="sh_holiday_overrides['+index+'][finish]" disabled /></td>'+
-      '<td><input type="time" name="sh_holiday_overrides['+index+'][open]" /></td>'+
-      '<td><input type="time" name="sh_holiday_overrides['+index+'][close]" /></td>'+
       '<td><button class="button sh-remove-holiday">Remove</button></td>'+
     '</tr>';
     table.append(row);
