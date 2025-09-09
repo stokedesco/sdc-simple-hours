@@ -5,6 +5,8 @@
 1. Upload the `simple-hours` folder to your `/wp-content/plugins/` directory.
 2. Activate the plugin through the 'Plugins' screen in WordPress.
 3. Go to **Simple Hours** in the admin menu to configure your weekly hours and holiday overrides, including holiday messages.
+   - Holiday overrides now support start and finish times for partial-day closures.
+   - Holiday messages appear beneath the weekly hours table for easier styling.
 4. Select your preferred 12-hour or 24-hour time display.
 5. Optionally enable schema.org markup to output structured data for search engines.
 

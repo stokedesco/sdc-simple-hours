@@ -93,4 +93,26 @@ class SimpleHours_Shortcodes_Test extends WP_UnitTestCase {
         $this->assertStringContainsString('Active Holiday', $output);
         $this->assertStringContainsString('We are closed for the', $output);
     }
+
+    public function test_partial_holiday_closure(){
+        update_option('sh_holiday_overrides', array(
+            array('from' => '2023-06-26', 'to' => '2023-06-26', 'label' => 'Morning Holiday', 'closed' => 1, 'start' => '09:00', 'finish' => '12:00')
+        ));
+        $closed_time = strtotime('2023-06-26 10:00:00');
+        $open_time = strtotime('2023-06-26 13:00:00');
+        $this->assertFalse( SH_Shortcodes::is_open( $closed_time ) );
+        $this->assertTrue( SH_Shortcodes::is_open( $open_time ) );
+    }
+
+    public function test_single_day_holiday_message_reopens_next_business_day(){
+        $today = wp_date('Y-m-d');
+        $next_monday = wp_date('Y-m-d', strtotime('next Monday', strtotime($today)));
+        update_option('sh_holiday_overrides', array(
+            array('from' => $next_monday, 'to' => $next_monday, 'label' => 'One Day Holiday', 'closed' => 1)
+        ));
+        $output = do_shortcode('[simplehours_fullweek]');
+        $reopen = wp_date(get_option('date_format'), strtotime($next_monday . ' +1 day'));
+        $this->assertStringContainsString($reopen, $output);
+    }
 }
+
