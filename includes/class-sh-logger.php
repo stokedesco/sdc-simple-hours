@@ -10,8 +10,8 @@ class SH_Logger {
         }
     }
     public function log($message, $context=array()){
-        $file = WP_CONTENT_DIR . '/uploads/' . self::LOG_FILE;
-        $entry = date('c') . ' ' . $message . ' ' . json_encode($context) . "\n";
+        $file  = WP_CONTENT_DIR . '/uploads/' . self::LOG_FILE;
+        $entry = wp_date('c') . ' ' . $message . ' ' . json_encode($context) . "\n";
         file_put_contents($file, $entry, FILE_APPEND);
     }
 }

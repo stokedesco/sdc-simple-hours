@@ -14,7 +14,7 @@ class SH_Shortcodes {
 
     public static function today(){
         list($weekly, $holidays) = self::get_data();
-        $today = date('Y-m-d');
+        $today = wp_date('Y-m-d');
 
         if (is_array($holidays)) {
             foreach ($holidays as $h) {
@@ -41,7 +41,7 @@ class SH_Shortcodes {
 
     public static function until(){
         list($weekly, $holidays) = self::get_data();
-        $now      = new DateTime();
+        $now      = new DateTime('now', wp_timezone());
         $today    = $now->format('Y-m-d');
         $time     = $now->format('H:i');
         $intervals = self::get_intervals_for_date($weekly, $holidays, $today);
@@ -55,12 +55,13 @@ class SH_Shortcodes {
             }
         }
 
-        $next_date = new DateTime();
+        $next_date = new DateTime('now', wp_timezone());
         for ($i=1;$i<=7;$i++){
-            $d = $next_date->add(new DateInterval('P1D'))->format('Y-m-d');
+            $d    = $next_date->add(new DateInterval('P1D'))->format('Y-m-d');
             $ints = self::get_intervals_for_date($weekly, $holidays, $d);
             if (!empty($ints)) {
-                $dn = date('l', strtotime($d));
+                $dt = new DateTime($d, wp_timezone());
+                $dn = $dt->format('l');
                 return "Next open at " . self::format_time($ints[0][0]) . " on {$dn}.";
             }
         }
@@ -80,7 +81,8 @@ class SH_Shortcodes {
                 }
             }
         }
-        $dn = date('l', strtotime($date));
+        $dt = new DateTime($date, wp_timezone());
+        $dn = $dt->format('l');
         if (!isset($weekly[$dn]) || !empty($weekly[$dn]['closed'])){
             return array();
         }
@@ -107,9 +109,9 @@ class SH_Shortcodes {
 
     public static function is_open($timestamp = null){
         list($weekly, $holidays) = self::get_data();
-        $ts   = $timestamp ? $timestamp : time();
-        $date = date('Y-m-d', $ts);
-        $time = date('H:i', $ts);
+        $ts   = $timestamp ? $timestamp : current_time('timestamp');
+        $date = wp_date('Y-m-d', $ts);
+        $time = wp_date('H:i', $ts);
         $ints = self::get_intervals_for_date($weekly, $holidays, $date);
         foreach ($ints as $i) {
             if ($time >= $i[0] && $time < $i[1]) return true;
@@ -120,7 +122,7 @@ class SH_Shortcodes {
     public static function fullweek(){
         list($weekly,) = self::get_data();
         $out         = '<table class="simple-hours-table">';
-        $current_day = date('l');
+        $current_day = wp_date('l');
         $second      = get_option(SH_Settings::OPTION_SECOND, false);
 
         if (is_array($weekly)) {
